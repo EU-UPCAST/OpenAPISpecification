@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  title: FastAPI
+  title: Privacy Endpoint
   version: 0.1.0
 paths:
   /:
@@ -353,7 +353,7 @@ components:
       properties:
         uid:
           type: string
-          title: Purpose
+          title: User ID
         purpose:
           type: string
           title: Purpose

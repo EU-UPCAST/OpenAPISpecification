@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  title: FastAPI
+  title: Privacy Endpoint
   version: 0.1.0
 paths:
   /:
@@ -85,12 +85,16 @@ paths:
                 - $ref: '#/components/schemas/CheckPolicy'
               title: Check Permission
               example:
+                  uid: UID-123
                   purpose: Data analysis
                   data:
                     - Electrocardiograph
                     - GPS
                   data_processing_operations:
                     - Statistical analysis
+                  policy_ids:
+                    - PID-123
+                    - PID-456
                   conditions:
                     - exercise: AerobicExercise
                       difficulty: Hard
@@ -347,6 +351,9 @@ components:
 
     CheckPolicy:
       properties:
+        uid:
+          type: string
+          title: User ID
         purpose:
           type: string
           title: Purpose
@@ -361,6 +368,12 @@ components:
           type: array
           title: Data Processing Operations
           default: []
+        policy_ids:
+          items:
+            type: string
+          type: array
+          title: An array of policy ids to check
+          default: []
         conditions:
           items:
             type: object
@@ -373,5 +386,6 @@ components:
         - purpose
         - permission
         - data
+        - policy_ids
       title: UpdatePolicy
    

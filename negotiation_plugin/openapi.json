@@ -1,0 +1,1861 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Negotiation Plugin API",
+    "description": "UPCAST Negotiation Plugin API",
+    "version": "1.0"
+  },
+  "paths": {
+    "/negotiation/create": {
+      "post": {
+        "summary": "Create a negotiation",
+        "operationId": "create_upcast_negotiation_negotiation_create_post",
+        "parameters": [
+          {
+            "name": "user-id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The ID of the user",
+              "title": "User-Id"
+            },
+            "description": "The ID of the user"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/UpcastPolicyObject"
+                  }
+                ],
+                "description": "The request object",
+                "title": "Body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/negotiation/{negotiation_id}": {
+      "get": {
+        "summary": "Get a negotiation",
+        "operationId": "get_upcast_negotiation_negotiation__negotiation_id__get",
+        "parameters": [
+          {
+            "name": "negotiation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The ID of the negotiation",
+              "title": "Negotiation Id"
+            },
+            "description": "The ID of the negotiation"
+          },
+          {
+            "name": "user-id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The ID of the user",
+              "title": "User-Id"
+            },
+            "description": "The ID of the user"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpcastNegotiationObject"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a negotiation",
+        "operationId": "delete_upcast_negotiation_negotiation__negotiation_id__delete",
+        "parameters": [
+          {
+            "name": "negotiation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The ID of the negotiation",
+              "title": "Negotiation Id"
+            },
+            "description": "The ID of the negotiation"
+          },
+          {
+            "name": "user-id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The ID of the user",
+              "title": "User-Id"
+            },
+            "description": "The ID of the user"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/negotiation": {
+      "get": {
+        "summary": "Get negotiations",
+        "operationId": "get_upcast_negotiations_negotiation_get",
+        "parameters": [
+          {
+            "name": "user-id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The ID of the user",
+              "title": "User-Id"
+            },
+            "description": "The ID of the user"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UpcastNegotiationObject"
+                  },
+                  "title": "Response Get Upcast Negotiations Negotiation Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a negotiation",
+        "operationId": "update_upcast_negotiation_negotiation_put",
+        "parameters": [
+          {
+            "name": "user-id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The ID of the user",
+              "title": "User-Id"
+            },
+            "description": "The ID of the user"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/UpcastNegotiationObject"
+                  }
+                ],
+                "description": "The negotiation object",
+                "title": "Body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/negotiation/{negotiation_id}/last-policy": {
+      "get": {
+        "summary": "Get the last policy",
+        "operationId": "get_last_policy_negotiation__negotiation_id__last_policy_get",
+        "parameters": [
+          {
+            "name": "negotiation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The ID of the negotiation",
+              "title": "Negotiation Id"
+            },
+            "description": "The ID of the negotiation"
+          },
+          {
+            "name": "user-id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The ID of the user",
+              "title": "User-Id"
+            },
+            "description": "The ID of the user"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Response Get Last Policy Negotiation  Negotiation Id  Last Policy Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/negotiation/{negotiation_id}/last-policy-diff": {
+      "get": {
+        "summary": "Get the last policy",
+        "operationId": "get_last_policy_negotiation__negotiation_id__last_policy_diff_get",
+        "parameters": [
+          {
+            "name": "negotiation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The ID of the negotiation",
+              "title": "Negotiation Id"
+            },
+            "description": "The ID of the negotiation"
+          },
+          {
+            "name": "user-id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The ID of the user",
+              "title": "User-Id"
+            },
+            "description": "The ID of the user"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Response Get Last Policy Negotiation  Negotiation Id  Last Policy Diff Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/consumer/request/new": {
+      "post": {
+        "summary": "Create a new request",
+        "operationId": "create_new_upcast_request_consumer_request_new_post",
+        "parameters": [
+          {
+            "name": "user-id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The ID of the user",
+              "title": "User-Id"
+            },
+            "description": "The ID of the user"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/UpcastPolicyObject"
+                  }
+                ],
+                "description": "The request object",
+                "title": "Body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/consumer/request/{request_id}": {
+      "get": {
+        "summary": "Get an existing request",
+        "operationId": "get_upcast_request_consumer_request__request_id__get",
+        "parameters": [
+          {
+            "name": "request_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The ID of the request",
+              "title": "Request Id"
+            },
+            "description": "The ID of the request"
+          },
+          {
+            "name": "user-id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The ID of the user",
+              "title": "User-Id"
+            },
+            "description": "The ID of the user"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpcastPolicyObject"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a request",
+        "operationId": "delete_upcast_request_consumer_request__request_id__delete",
+        "parameters": [
+          {
+            "name": "request_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The ID of the request",
+              "title": "Request Id"
+            },
+            "description": "The ID of the request"
+          },
+          {
+            "name": "user-id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The ID of the user",
+              "title": "User-Id"
+            },
+            "description": "The ID of the user"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/consumer/request": {
+      "put": {
+        "summary": "Update an existing request",
+        "operationId": "update_upcast_request_consumer_request_put",
+        "parameters": [
+          {
+            "name": "user-id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The ID of the user",
+              "title": "User-Id"
+            },
+            "description": "The ID of the user"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/UpcastPolicyObject"
+                  }
+                ],
+                "description": "The request object",
+                "title": "Body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/consumer/offer": {
+      "get": {
+        "summary": "Get available offers",
+        "operationId": "get_upcast_offers_consumer_offer_get",
+        "parameters": [
+          {
+            "name": "user-id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The ID of the user",
+              "title": "User-Id"
+            },
+            "description": "The ID of the user"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UpcastPolicyObject"
+                  },
+                  "title": "Response Get Upcast Offers Consumer Offer Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/producer/offer/new": {
+      "post": {
+        "summary": "Create a new offer",
+        "operationId": "create_new_upcast_offer_producer_offer_new_post",
+        "parameters": [
+          {
+            "name": "user-id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The ID of the user",
+              "title": "User-Id"
+            },
+            "description": "The ID of the user"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/UpcastPolicyObject"
+                  }
+                ],
+                "description": "The offer object",
+                "title": "Body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/producer/offer/{offer_id}": {
+      "get": {
+        "summary": "Get an existing offer",
+        "operationId": "get_upcast_offer_producer_offer__offer_id__get",
+        "parameters": [
+          {
+            "name": "offer_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The ID of the offer",
+              "title": "Offer Id"
+            },
+            "description": "The ID of the offer"
+          },
+          {
+            "name": "user-id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The ID of the user",
+              "title": "User-Id"
+            },
+            "description": "The ID of the user"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpcastPolicyObject"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/offer/{offer_id}": {
+      "delete": {
+        "summary": "Delete an offer",
+        "operationId": "delete_upcast_offer_offer__offer_id__delete",
+        "parameters": [
+          {
+            "name": "offer_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The ID of the offer",
+              "title": "Offer Id"
+            },
+            "description": "The ID of the offer"
+          },
+          {
+            "name": "user-id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The ID of the user",
+              "title": "User-Id"
+            },
+            "description": "The ID of the user"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/contract/{negotiation_id}": {
+      "get": {
+        "summary": "Get a contract (Under Construction)",
+        "operationId": "get_upcast_contract_contract__negotiation_id__get",
+        "parameters": [
+          {
+            "name": "negotiation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The ID of the negotiation",
+              "title": "Negotiation Id"
+            },
+            "description": "The ID of the negotiation"
+          },
+          {
+            "name": "user-id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The ID of the user",
+              "title": "User-Id"
+            },
+            "description": "The ID of the user"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/contract/sign": {
+      "post": {
+        "summary": "Sign a contract (Under Construction)",
+        "operationId": "sign_upcast_contract_contract_sign_post",
+        "parameters": [
+          {
+            "name": "user-id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The ID of the user",
+              "title": "User-Id"
+            },
+            "description": "The ID of the user"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/UpcastContractObject"
+                  }
+                ],
+                "description": "The contract sign object",
+                "title": "Body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/new": {
+      "post": {
+        "summary": "Create a new user",
+        "operationId": "create_user_user_new_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/{user_id}": {
+      "get": {
+        "summary": "Get a user by ID",
+        "operationId": "get_user_user__user_id__get",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "User Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a user by ID",
+        "operationId": "update_user_user__user_id__put",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "User Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "summary": "Get all users",
+        "operationId": "get_all_users_users_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  },
+                  "type": "array",
+                  "title": "Response Get All Users Users Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/consumer/offer/accept/{negotiation_id}": {
+      "post": {
+        "summary": "Accept an offer",
+        "operationId": "accept_upcast_request_consumer_offer_accept__negotiation_id__post",
+        "parameters": [
+          {
+            "name": "negotiation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The ID of the negotiation",
+              "title": "Negotiation Id"
+            },
+            "description": "The ID of the negotiation"
+          },
+          {
+            "name": "user-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "The ID of the user",
+              "title": "User-Id"
+            },
+            "description": "The ID of the user"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/consumer/offer/verify/{negotiation_id}": {
+      "post": {
+        "summary": "Verify a request",
+        "operationId": "verify_upcast_request_consumer_offer_verify__negotiation_id__post",
+        "parameters": [
+          {
+            "name": "negotiation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The ID of the negotiation",
+              "title": "Negotiation Id"
+            },
+            "description": "The ID of the negotiation"
+          },
+          {
+            "name": "user-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "The ID of the user",
+              "title": "User-Id"
+            },
+            "description": "The ID of the user"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/producer/request/agree/{negotiation_id}": {
+      "post": {
+        "summary": "Agree on a request",
+        "operationId": "agree_upcast_offer_producer_request_agree__negotiation_id__post",
+        "parameters": [
+          {
+            "name": "negotiation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The ID of the negotiation",
+              "title": "Negotiation Id"
+            },
+            "description": "The ID of the negotiation"
+          },
+          {
+            "name": "user-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "The ID of the user",
+              "title": "User-Id"
+            },
+            "description": "The ID of the user"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/producer/offer/finalize/{negotiation_id}": {
+      "post": {
+        "summary": "Accept an offer",
+        "operationId": "finalize_upcast_offer_producer_offer_finalize__negotiation_id__post",
+        "parameters": [
+          {
+            "name": "negotiation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The ID of the negotiation",
+              "title": "Negotiation Id"
+            },
+            "description": "The ID of the negotiation"
+          },
+          {
+            "name": "user-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "The ID of the user",
+              "title": "User-Id"
+            },
+            "description": "The ID of the user"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/negotiation/terminate/{negotiation_id}": {
+      "post": {
+        "summary": "Terminate a negotiation",
+        "operationId": "terminate_upcast_negotiation_negotiation_terminate__negotiation_id__post",
+        "parameters": [
+          {
+            "name": "negotiation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The ID of the negotiation",
+              "title": "Negotiation Id"
+            },
+            "description": "The ID of the negotiation"
+          },
+          {
+            "name": "user-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "The ID of the user",
+              "title": "User-Id"
+            },
+            "description": "The ID of the user"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "PartyType": {
+        "type": "string",
+        "enum": [
+          "consumer",
+          "producer"
+        ],
+        "title": "PartyType"
+      },
+      "UpcastContractObject": {
+        "properties": {
+          "_id": {
+            "anyOf": [
+              {},
+              {
+                "type": "null"
+              }
+            ],
+            "title": " Id"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          },
+          "corresponding_parties": {
+            "type": "object",
+            "title": "Corresponding Parties"
+          },
+          "data_processing_workflow_object": {
+            "type": "object",
+            "title": "Data Processing Workflow Object"
+          },
+          "natural_language_document": {
+            "type": "string",
+            "title": "Natural Language Document"
+          },
+          "resource_description_object": {
+            "$ref": "#/components/schemas/UpcastResourceDescriptionObject"
+          },
+          "metadata": {
+            "type": "object",
+            "title": "Metadata"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "negotiation_id": {
+            "title": "Negotiation Id"
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "corresponding_parties",
+          "data_processing_workflow_object",
+          "natural_language_document",
+          "resource_description_object",
+          "metadata",
+          "status",
+          "negotiation_id"
+        ],
+        "title": "UpcastContractObject"
+      },
+      "UpcastNegotiationObject": {
+        "properties": {
+          "_id": {
+            "anyOf": [
+              {},
+              {
+                "type": "null"
+              }
+            ],
+            "title": " Id"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          },
+          "consumer_id": {
+            "title": "Consumer Id"
+          },
+          "producer_id": {
+            "title": "Producer Id"
+          },
+          "negotiation_status": {
+            "type": "string",
+            "title": "Negotiation Status"
+          },
+          "resource_description": {
+            "type": "object",
+            "title": "Resource Description"
+          },
+          "dpw": {
+            "items": {},
+            "type": "array",
+            "title": "Dpw"
+          },
+          "nlp": {
+            "type": "string",
+            "title": "Nlp"
+          },
+          "conflict_status": {
+            "type": "string",
+            "title": "Conflict Status"
+          },
+          "negotiations": {
+            "items": {},
+            "type": "array",
+            "title": "Negotiations"
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "consumer_id",
+          "producer_id",
+          "negotiation_status",
+          "resource_description",
+          "dpw",
+          "nlp",
+          "conflict_status",
+          "negotiations"
+        ],
+        "title": "UpcastNegotiationObject"
+      },
+      "UpcastPolicyObject": {
+        "properties": {
+          "_id": {
+            "anyOf": [
+              {},
+              {
+                "type": "null"
+              }
+            ],
+            "title": " Id"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          },
+          "type": {
+            "type": "string",
+            "title": "Type"
+          },
+          "consumer_id": {
+            "anyOf": [
+              {},
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Consumer Id"
+          },
+          "producer_id": {
+            "title": "Producer Id"
+          },
+          "data_processing_workflow_object": {
+            "items": {},
+            "type": "array",
+            "title": "Data Processing Workflow Object"
+          },
+          "natural_language_document": {
+            "type": "string",
+            "title": "Natural Language Document"
+          },
+          "resource_description_object": {
+            "$ref": "#/components/schemas/UpcastResourceDescriptionObject"
+          },
+          "odrl_policy": {
+            "type": "object",
+            "title": "Odrl Policy"
+          },
+          "negotiation_id": {
+            "anyOf": [
+              {},
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Negotiation Id"
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "type",
+          "consumer_id",
+          "producer_id",
+          "data_processing_workflow_object",
+          "natural_language_document",
+          "resource_description_object",
+          "odrl_policy"
+        ],
+        "title": "UpcastPolicyObject"
+      },
+      "UpcastResourceDescriptionObject": {
+        "properties": {
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          },
+          "price": {
+            "type": "number",
+            "title": "Price"
+          },
+          "price_unit": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Price Unit"
+          },
+          "uri": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Uri"
+          },
+          "policy_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Policy Url"
+          },
+          "environmental_cost_of_generation": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Environmental Cost Of Generation"
+          },
+          "environmental_cost_of_serving": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Environmental Cost Of Serving"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "type_of_data": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Type Of Data"
+          },
+          "data_format": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data Format"
+          },
+          "data_size": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data Size"
+          },
+          "geographic_scope": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Geographic Scope"
+          },
+          "tags": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tags"
+          },
+          "publisher": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Publisher"
+          },
+          "theme": {
+            "anyOf": [
+              {
+                "items": {},
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Theme"
+          },
+          "distribution": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Distribution"
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "price"
+        ],
+        "title": "UpcastResourceDescriptionObject"
+      },
+      "User": {
+        "properties": {
+          "_id": {
+            "anyOf": [
+              {},
+              {
+                "type": "null"
+              }
+            ],
+            "title": " Id"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "type": {
+            "$ref": "#/components/schemas/PartyType"
+          }
+        },
+        "type": "object",
+        "required": [
+          "type"
+        ],
+        "title": "User"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}

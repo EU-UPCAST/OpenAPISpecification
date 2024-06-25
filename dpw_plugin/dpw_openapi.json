@@ -1,0 +1,1670 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "contact": {
+      "email": "goodflows@ict-abovo.gr",
+      "name": "ict abovo",
+      "url": "https://www.ict-abovo.gr/"
+    },
+    "description": "This is the swagger/OPENAPI documentation of the DPW plugin REST API",
+    "title": "DPW plugin REST API",
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "/"
+    }
+  ],
+  "security": [
+    {
+      "Bearer-jwt": []
+    }
+  ],
+  "tags": [
+    {
+      "description": "Process models handling",
+      "name": "Workflow Model API"
+    }
+  ],
+  "paths": {
+    "/processModel/{companyID}": {
+      "post": {
+        "description": "The information model will be created from scratch if it does not exist and get loaded into the temp model of the returned ID (which will be flushed to the stored ontology upon save)",
+        "operationId": "createWorkspace",
+        "parameters": [
+          {
+            "description": "ID of the company",
+            "in": "path",
+            "name": "companyID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "Temp information model ID": {
+                    "description": "Temp information model ID",
+                    "value": "16afa1ee8a564d2086f05e901a39a80a"
+                  }
+                }
+              }
+            },
+            "description": "Successful operation. Returns the ID of the temp information model"
+          }
+        },
+        "summary": "Create the reference workspace",
+        "tags": [
+          "Workflow Model API"
+        ]
+      }
+    },
+    "/processModel/{companyID}/{informationModelID}": {
+      "post": {
+        "operationId": "saveWorkspace",
+        "parameters": [
+          {
+            "description": "ID of the company",
+            "in": "path",
+            "name": "companyID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ID of the information model",
+            "in": "path",
+            "name": "informationModelID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "Information model ID": {
+                    "description": "Information model ID",
+                    "value": "16afa1ee8a564d2086f05e901a39a80a"
+                  }
+                }
+              }
+            },
+            "description": "Successful operation. Returns the ID of the stored information model"
+          }
+        },
+        "summary": "Save workspace",
+        "tags": [
+          "Workflow Model API"
+        ]
+      }
+    },
+    "/processModel/{companyID}/{workspaceID}/models": {
+      "get": {
+        "description": "All process models that have been created and not deleted within the company and current workspace will be listed.",
+        "operationId": "listProcessModels",
+        "parameters": [
+          {
+            "description": "ID of the company",
+            "in": "path",
+            "name": "companyID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ID of the workspace",
+            "in": "path",
+            "name": "workspaceID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ApiProcessModelBasicInfo"
+                  }
+                }
+              }
+            },
+            "description": "Successful operation. Returns the list of all currently existing process models"
+          }
+        },
+        "summary": "Display all process models in a list",
+        "tags": [
+          "Workflow Model API"
+        ]
+      }
+    },
+    "/processModel/{companyID}/{workspaceID}/process": {
+      "post": {
+        "description": "The process model will be created in the specified company/workspace from scratch if it does not exist, and get loaded into the temp model of the returned ID (which will be flushed to the stored ontology upon save)",
+        "operationId": "createProcessModel",
+        "parameters": [
+          {
+            "description": "ID of the company",
+            "in": "path",
+            "name": "companyID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ID of the workspace",
+            "in": "path",
+            "name": "workspaceID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "temp process model ID": {
+                    "description": "temp process model ID",
+                    "value": "16afa1ee8a564d2086f05e901a39a80a"
+                  }
+                }
+              }
+            },
+            "description": "Successful operation. Returns the ID of the temp process model"
+          }
+        },
+        "summary": "Create temp process model",
+        "tags": [
+          "Workflow Model API"
+        ]
+      }
+    },
+    "/processModel/{companyID}/{workspaceID}/{processModelID}": {
+      "delete": {
+        "description": "Deletes the specified process model, thereby removing all associated models from the ontology.",
+        "operationId": "deleteProcessModel",
+        "parameters": [
+          {
+            "description": "ID of the company",
+            "in": "path",
+            "name": "companyID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ID of the workspace",
+            "in": "path",
+            "name": "workspaceID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ID of the process model",
+            "in": "path",
+            "name": "processModelID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            },
+            "description": "Successful operation. Returns true if process model successfully deleted."
+          }
+        },
+        "summary": "Delete a previously created process model",
+        "tags": [
+          "Workflow Model API"
+        ]
+      },
+      "get": {
+        "description": "Loads the specified process model from the ontology onto the appropriate object.",
+        "operationId": "openProcessModel",
+        "parameters": [
+          {
+            "description": "ID of the company",
+            "in": "path",
+            "name": "companyID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ID of the workspace",
+            "in": "path",
+            "name": "workspaceID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ID of the process model",
+            "in": "path",
+            "name": "processModelID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiProcessModel"
+                }
+              }
+            },
+            "description": "Successful operation. Returns the object representing the specified process model"
+          }
+        },
+        "summary": "Open a previously created process model",
+        "tags": [
+          "Workflow Model API"
+        ]
+      },
+      "put": {
+        "description": "Updates the specified process model with the information contained in the provided process model object.",
+        "operationId": "updateProcessModel",
+        "parameters": [
+          {
+            "description": "ID of the company",
+            "in": "path",
+            "name": "companyID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ID of the workspace",
+            "in": "path",
+            "name": "workspaceID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ID of the process model",
+            "in": "path",
+            "name": "processModelID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApiProcessModel"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            },
+            "description": "Successful operation. Returns true if process model successfully updated."
+          }
+        },
+        "summary": "Update a previously created process model",
+        "tags": [
+          "Workflow Model API"
+        ]
+      }
+    },
+    "/processModel/{companyID}/{workspaceID}/{processModelID}/dataset": {
+      "post": {
+        "description": "A new dataset node will be created and associated with the process model at hand, as a special type of task node reflecting a data import operation. This method only defines the name of the dataset, passed as a parameter and set as the asset of the (sole) execution profile. Mainly designed to facilitate the creation of new dataset nodes through the UI, based on known datasets.",
+        "operationId": "createNewConcreteDatasetNode",
+        "parameters": [
+          {
+            "description": "ID of the company",
+            "in": "path",
+            "name": "companyID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ID of the workspace",
+            "in": "path",
+            "name": "workspaceID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ID of the process model",
+            "in": "path",
+            "name": "processModelID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string",
+                "description": "The specified dataset name"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "task node ID": {
+                    "description": "task node ID",
+                    "value": "16afa1ee8a564d2086f05e901a39a80a"
+                  }
+                }
+              }
+            },
+            "description": "Successful operation. Returns the ID of the task node"
+          }
+        },
+        "summary": "Create a new dataset node",
+        "tags": [
+          "Workflow Model API"
+        ]
+      }
+    },
+    "/processModel/{companyID}/{workspaceID}/{processModelID}/edge": {
+      "post": {
+        "description": "A new edge will be created and associated with the process model at hand. This will be defined to connect the task nodes specified as its source and destination in the edge object passed as a parameter. Mainly designed to facilitate the creation, through the UI, of a new edge connecting two existing tasks.",
+        "operationId": "createNewEdge",
+        "parameters": [
+          {
+            "description": "ID of the company",
+            "in": "path",
+            "name": "companyID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ID of the workspace",
+            "in": "path",
+            "name": "workspaceID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ID of the process model",
+            "in": "path",
+            "name": "processModelID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApiWorkflowEdge"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "edge ID": {
+                    "description": "edge ID",
+                    "value": "16afa1ee8a564d2086f05e901a39a80a"
+                  }
+                }
+              }
+            },
+            "description": "Successful operation. Returns the ID of the edge"
+          }
+        },
+        "summary": "Create a new edge",
+        "tags": [
+          "Workflow Model API"
+        ]
+      }
+    },
+    "/processModel/{companyID}/{workspaceID}/{processModelID}/edge/{edgeID}": {
+      "delete": {
+        "description": "The edge specified through its ID is removed from the process model.",
+        "operationId": "deleteEdge",
+        "parameters": [
+          {
+            "description": "ID of the company",
+            "in": "path",
+            "name": "companyID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ID of the workspace",
+            "in": "path",
+            "name": "workspaceID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ID of the process model",
+            "in": "path",
+            "name": "processModelID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ID of the edge to be deleted",
+            "in": "path",
+            "name": "edgeID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "edge ID": {
+                    "description": "edge ID",
+                    "value": "16afa1ee8a564d2086f05e901a39a80a"
+                  }
+                }
+              }
+            },
+            "description": "Successful operation. Returns the ID of the removed edge."
+          }
+        },
+        "summary": "Delete an edge",
+        "tags": [
+          "Workflow Model API"
+        ]
+      },
+      "get": {
+        "description": "Provides an object representing the process edge specified through the corresponding ID.",
+        "operationId": "getEdge",
+        "parameters": [
+          {
+            "description": "ID of the company",
+            "in": "path",
+            "name": "companyID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ID of the workspace",
+            "in": "path",
+            "name": "workspaceID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ID of the process model",
+            "in": "path",
+            "name": "processModelID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ID of the edge",
+            "in": "path",
+            "name": "edgeID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiWorkflowEdge"
+                }
+              }
+            },
+            "description": "Successful operation. Returns an edge object."
+          }
+        },
+        "summary": "Retrieve an edge by ID",
+        "tags": [
+          "Workflow Model API"
+        ]
+      },
+      "put": {
+        "description": "Updates a process edge specified through its ID, by setting the values defined within an edge object passed as a parameter.",
+        "operationId": "updateEdge",
+        "parameters": [
+          {
+            "description": "ID of the company",
+            "in": "path",
+            "name": "companyID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ID of the workspace",
+            "in": "path",
+            "name": "workspaceID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ID of the process model",
+            "in": "path",
+            "name": "processModelID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ID of the edge to be updated",
+            "in": "path",
+            "name": "edgeID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApiWorkflowEdge"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "edge ID": {
+                    "description": "edge ID",
+                    "value": "16afa1ee8a564d2086f05e901a39a80a"
+                  }
+                }
+              }
+            },
+            "description": "Successful operation. Returns the ID of the updated edge"
+          }
+        },
+        "summary": "Update an edge",
+        "tags": [
+          "Workflow Model API"
+        ]
+      }
+    },
+    "/processModel/{companyID}/{workspaceID}/{processModelID}/edge/{edgeID}/type": {
+      "put": {
+        "description": "By default, each new edge is created without a type ('plain'). Through this method its type can be set to be either control or data edge.",
+        "operationId": "updateEdgeType",
+        "parameters": [
+          {
+            "description": "ID of the company",
+            "in": "path",
+            "name": "companyID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ID of the workspace",
+            "in": "path",
+            "name": "workspaceID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ID of the process model",
+            "in": "path",
+            "name": "processModelID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ID of the edge to be updated",
+            "in": "path",
+            "name": "edgeID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApiWorkflowEdge"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "edge type": {
+                    "description": "edge type",
+                    "value": "DataEdges"
+                  }
+                }
+              }
+            },
+            "description": "Successful operation. Returns the type of the edge as string, assuming one of the following three values: 'PLAIN', 'ControlEdges', 'DataEdges'."
+          }
+        },
+        "summary": "Update the type of an edge",
+        "tags": [
+          "Workflow Model API"
+        ]
+      }
+    },
+    "/processModel/{companyID}/{workspaceID}/{processModelID}/export": {
+      "get": {
+        "description": "Exports the specified process model as an OWL ontology.",
+        "operationId": "exportProcessModel",
+        "parameters": [
+          {
+            "description": "ID of the company",
+            "in": "path",
+            "name": "companyID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ID of the workspace",
+            "in": "path",
+            "name": "workspaceID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ID of the process model",
+            "in": "path",
+            "name": "processModelID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "text/plain": {
+
+              }
+            },
+            "description": "Successful operation. Returns the process model owl file."
+          }
+        },
+        "summary": "Retrieve the OWL representation of a process model",
+        "tags": [
+          "Workflow Model API"
+        ]
+      }
+    },
+    "/processModel/{companyID}/{workspaceID}/{processModelID}/exportRichModel": {
+      "get": {
+        "description": "Exports the specified process model as the corresponding OWL ontology. It also exports the full Information Model and the basic concepts of Workflow Models.",
+        "operationId": "exportRichProcessModel",
+        "parameters": [
+          {
+            "description": "ID of the company",
+            "in": "path",
+            "name": "companyID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ID of the workspace",
+            "in": "path",
+            "name": "workspaceID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ID of the process model",
+            "in": "path",
+            "name": "processModelID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "text/plain": {
+
+              }
+            },
+            "description": "Successful operation. Returns the enriched process model owl file."
+          }
+        },
+        "summary": "Retrieve an enriched OWL representation of a process model",
+        "tags": [
+          "Workflow Model API"
+        ]
+      }
+    },
+    "/processModel/{companyID}/{workspaceID}/{processModelID}/graph": {
+      "get": {
+        "description": "Returns the mxgraph zip file that has been created for the specified process model.",
+        "operationId": "getProcessModelMxGraphFile",
+        "parameters": [
+          {
+            "description": "ID of the company",
+            "in": "path",
+            "name": "companyID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ID of the workspace",
+            "in": "path",
+            "name": "workspaceID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ID of the process model",
+            "in": "path",
+            "name": "processModelID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/zip": {
+
+              }
+            },
+            "description": "Successful operation. Returns the mxgraph zip file."
+          }
+        },
+        "summary": "Retrieve the mxgraph zip file corresponding to a given process model",
+        "tags": [
+          "Workflow Model API"
+        ]
+      },
+      "put": {
+        "description": "Saves the specified process model to the ontology, thereby also storing the associated mxgraph zip file for future use. The ZIP file should be uploaded using 'multipart/form-data' media type using the 'attachment' input.",
+        "operationId": "saveProcessModelWithMxGraphFile",
+        "parameters": [
+          {
+            "description": "ID of the company",
+            "in": "path",
+            "name": "companyID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ID of the workspace",
+            "in": "path",
+            "name": "workspaceID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ID of the process model",
+            "in": "path",
+            "name": "processModelID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "attachment": {
+                    "type": "array",
+                    "description": "The mxgraph zip file",
+                    "items": {
+                      "type": "string",
+                      "format": "binary"
+                    }
+                  }
+                },
+                "required": [
+                  "attachment"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            },
+            "description": "Successful operation. Returns true if process model successfully saved."
+          }
+        },
+        "summary": "Save a process model",
+        "tags": [
+          "Workflow Model API"
+        ]
+      }
+    },
+    "/processModel/{companyID}/{workspaceID}/{processModelID}/initiators": {
+      "put": {
+        "description": "Allows the workflow designer to provide a list of abstract and/or concrete actors as initiators. Note that this function removes all previously initiators associated prior to adding the new ones.",
+        "operationId": "setProcessModelInitiators",
+        "parameters": [
+          {
+            "description": "ID of the company",
+            "in": "path",
+            "name": "companyID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ID of the workspace",
+            "in": "path",
+            "name": "workspaceID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ID of the process model",
+            "in": "path",
+            "name": "processModelID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApiInitiators"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            },
+            "description": "Successful operation. Returns true if initiators successfully set."
+          }
+        },
+        "summary": "Associate one or more initiators to a process model",
+        "tags": [
+          "Workflow Model API"
+        ]
+      }
+    },
+    "/processModel/{companyID}/{workspaceID}/{processModelID}/purposes": {
+      "put": {
+        "description": "Adds a set of possible process purposes to the process model, implying that such a workflow can be executed in order for any of these purposes to be served. Note that this method removes any purposes previously defined.",
+        "operationId": "setProcessModelPurposes",
+        "parameters": [
+          {
+            "description": "ID of the company",
+            "in": "path",
+            "name": "companyID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ID of the workspace",
+            "in": "path",
+            "name": "workspaceID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ID of the process model",
+            "in": "path",
+            "name": "processModelID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApiPurposes"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            },
+            "description": "Successful operation. Returns true if purposes successfully set."
+          }
+        },
+        "summary": "Associate one or more purposes to a process model",
+        "tags": [
+          "Workflow Model API"
+        ]
+      }
+    },
+    "/processModel/{companyID}/{workspaceID}/{processModelID}/task": {
+      "post": {
+        "description": "A new task node will be created and associated with the process model at hand. This method only defines its operation, passed as a parameter as part of the corresponding task node object. Mainly designed to facilitate the creation of new task nodes through the UI, based on operation.",
+        "operationId": "createNewTaskNode",
+        "parameters": [
+          {
+            "description": "ID of the company",
+            "in": "path",
+            "name": "companyID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ID of the workspace",
+            "in": "path",
+            "name": "workspaceID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ID of the process model",
+            "in": "path",
+            "name": "processModelID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApiTaskNode"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "task node ID": {
+                    "description": "task node ID",
+                    "value": "16afa1ee8a564d2086f05e901a39a80a"
+                  }
+                }
+              }
+            },
+            "description": "Successful operation. Returns the ID of the task node"
+          }
+        },
+        "summary": "Create a new task node",
+        "tags": [
+          "Workflow Model API"
+        ]
+      }
+    },
+    "/processModel/{companyID}/{workspaceID}/{processModelID}/task/{taskNodeID}": {
+      "delete": {
+        "description": "The task node specified through its ID is removed from the process model, together with its ingoing/outgoing edges.",
+        "operationId": "deleteTaskNode",
+        "parameters": [
+          {
+            "description": "ID of the company",
+            "in": "path",
+            "name": "companyID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ID of the workspace",
+            "in": "path",
+            "name": "workspaceID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ID of the process model",
+            "in": "path",
+            "name": "processModelID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ID of the task node to be deleted",
+            "in": "path",
+            "name": "taskNodeID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "task node ID": {
+                    "description": "task node ID",
+                    "value": "16afa1ee8a564d2086f05e901a39a80a"
+                  }
+                }
+              }
+            },
+            "description": "Successful operation. Returns the ID of the removed task node."
+          }
+        },
+        "summary": "Delete a task node",
+        "tags": [
+          "Workflow Model API"
+        ]
+      },
+      "get": {
+        "description": "Provides an object representing the process task node specified through the corresponding ID.",
+        "operationId": "getTaskNode",
+        "parameters": [
+          {
+            "description": "ID of the company",
+            "in": "path",
+            "name": "companyID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ID of the workspace",
+            "in": "path",
+            "name": "workspaceID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ID of the process model",
+            "in": "path",
+            "name": "processModelID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ID of the process task node",
+            "in": "path",
+            "name": "taskNodeID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiTaskNode"
+                }
+              }
+            },
+            "description": "Successful operation. Returns a task node object."
+          }
+        },
+        "summary": "Retrieve a task node by ID",
+        "tags": [
+          "Workflow Model API"
+        ]
+      },
+      "put": {
+        "description": "Updates a process task node specified through its ID, by setting the values defined within a task node object passed as a parameter.",
+        "operationId": "updateTaskNode",
+        "parameters": [
+          {
+            "description": "ID of the company",
+            "in": "path",
+            "name": "companyID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ID of the workspace",
+            "in": "path",
+            "name": "workspaceID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ID of the process model",
+            "in": "path",
+            "name": "processModelID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ID of the task node to be updated",
+            "in": "path",
+            "name": "taskNodeID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApiTaskNode"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "task node ID": {
+                    "description": "task node ID",
+                    "value": "16afa1ee8a564d2086f05e901a39a80a"
+                  }
+                }
+              }
+            },
+            "description": "Successful operation. Returns the ID of the updated task node"
+          }
+        },
+        "summary": "Update a task node",
+        "tags": [
+          "Workflow Model API"
+        ]
+      }
+    },
+    "/processModel/{companyID}/{workspaceID}/{processModelID}/verify": {
+      "get": {
+        "description": "Constructs the verified and transformed (if needed) version of the specified process model.",
+        "operationId": "verifyProcessModel",
+        "parameters": [
+          {
+            "description": "ID of the company",
+            "in": "path",
+            "name": "companyID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ID of the workspace",
+            "in": "path",
+            "name": "workspaceID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ID of the process model",
+            "in": "path",
+            "name": "processModelID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiVerifiedProcessModel"
+                }
+              }
+            },
+            "description": "Successful operation. Returns an object representing the verified version of the initial process model."
+          }
+        },
+        "summary": "Verify a user-defined process model",
+        "tags": [
+          "Workflow Model API"
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ApiInitiators": {
+        "type": "object",
+        "description": "The list of initiators",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ApiWorkflowModelEntity"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "initiators": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "ApiProcessModel": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ApiWorkflowModelEntity"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "constraint": {
+                "$ref": "#/components/schemas/ApiWorkflowModelEntity"
+              },
+              "description": {
+                "type": "string"
+              },
+              "initiators": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "isVerified": {
+                "type": "boolean"
+              },
+              "purposes": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "verified": {
+                "type": "boolean"
+              }
+            }
+          }
+        ]
+      },
+      "ApiProcessModelBasicInfo": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ApiWorkflowModelEntity"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "description": {
+                "type": "string"
+              },
+              "isVerified": {
+                "type": "boolean"
+              },
+              "verified": {
+                "type": "boolean"
+              }
+            }
+          }
+        ]
+      },
+      "ApiPurposes": {
+        "type": "object",
+        "description": "The list of purposes",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ApiWorkflowModelEntity"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "purposes": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "ApiTaskNode": {
+        "type": "object",
+        "description": "The specified task node object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ApiWorkflowModelEntity"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "controlSync": {
+                "type": "boolean"
+              },
+              "dataSync": {
+                "type": "boolean"
+              },
+              "description": {
+                "type": "string"
+              },
+              "executionProfiles": {
+                "type": "array",
+                "properties": {
+                  "empty": {
+                    "type": "boolean"
+                  }
+                },
+                "items": {
+                  "$ref": "#/components/schemas/ApiWorkflowModelEntity"
+                }
+              },
+              "isControlSync": {
+                "type": "boolean"
+              },
+              "isDataSync": {
+                "type": "boolean"
+              },
+              "operation": {
+                "type": "string"
+              }
+            }
+          }
+        ]
+      },
+      "ApiVerifiedProcessModel": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ApiWorkflowModelEntity"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "constraint": {
+                "$ref": "#/components/schemas/ApiWorkflowModelEntity"
+              },
+              "description": {
+                "type": "string"
+              },
+              "edges": {
+                "type": "array",
+                "properties": {
+                  "empty": {
+                    "type": "boolean"
+                  }
+                },
+                "items": {
+                  "$ref": "#/components/schemas/ApiWorkflowModelEntity"
+                }
+              },
+              "initiators": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "isVerified": {
+                "type": "boolean"
+              },
+              "purposes": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "tasks": {
+                "type": "array",
+                "properties": {
+                  "empty": {
+                    "type": "boolean"
+                  }
+                },
+                "items": {
+                  "$ref": "#/components/schemas/ApiWorkflowModelEntity"
+                }
+              },
+              "verificationResult": {
+                "type": "string"
+              },
+              "verified": {
+                "type": "boolean"
+              }
+            }
+          }
+        ]
+      },
+      "ApiWorkflowEdge": {
+        "type": "object",
+        "description": "The specified edge object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ApiWorkflowModelEntity"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "conditions": {
+                "$ref": "#/components/schemas/ApiWorkflowModelEntity"
+              },
+              "destinationTaskNodeID": {
+                "type": "string"
+              },
+              "edgeDescription": {
+                "type": "string"
+              },
+              "edgeType": {
+                "type": "string"
+              },
+              "flowConstraints": {
+                "$ref": "#/components/schemas/ApiWorkflowModelEntity"
+              },
+              "informationEntities": {
+                "type": "array",
+                "properties": {
+                  "empty": {
+                    "type": "boolean"
+                  }
+                },
+                "items": {
+                  "$ref": "#/components/schemas/ApiWorkflowModelEntity"
+                }
+              },
+              "sourceTaskNodeID": {
+                "type": "string"
+              }
+            }
+          }
+        ]
+      },
+      "ApiWorkflowModelEntity": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "Bearer-jwt": {
+        "bearerFormat": "JWT",
+        "scheme": "bearer",
+        "type": "http"
+      }
+    }
+  }
+}

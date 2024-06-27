@@ -4,18 +4,16 @@ info:
     email: goodflows@ict-abovo.gr
     name: ict abovo
     url: https://www.ict-abovo.gr/
-  description: This is the swagger/OPENAPI documentation of Goodflows Server REST API
-  title: Goodflows Server REST API
+  description: This is the swagger/OPENAPI documentation of PUC Consumer-side REST API
+  title: PUC Consumer-side REST API
   version: '1.0'
 servers:
-  - url: /policyEngine
+  - url: /
+security:
+  - Bearer-jwt: []
 tags:
   - description: Information model handling
     name: Information Model API
-  - description: Process models handling
-    name: Workflow Model API
-  - description: Information model editor state handling
-    name: Information Model Editor API
   - description: Policy Decision Point actions
     name: Policy Decision Point API
   - description: Policy model handling
@@ -254,7 +252,7 @@ paths:
         - Information Model API
   /informationModel/{companyID}/{informationModelID}/edge:
     delete:
-      operationId: deleteEdge_1
+      operationId: deleteEdge
       parameters:
         - description: ID of the company
           in: path
@@ -1046,6 +1044,121 @@ paths:
       summary: Delete Information model node attribute
       tags:
         - Information Model API
+  /informationModel/{companyID}/{informationModelID}/node/{name}/intraGraphRelations:
+    get:
+      operationId: getIntraGraphRelations
+      parameters:
+        - description: ID of the company
+          in: path
+          name: companyID
+          required: true
+          schema:
+            type: string
+        - description: ID of the information model
+          in: path
+          name: informationModelID
+          required: true
+          schema:
+            type: string
+        - description: unique name of the information model node
+          in: path
+          name: name
+          required: true
+          schema:
+            type: string
+        - description: direction criterion
+          in: query
+          name: searchDirection
+          required: false
+          schema:
+            type: string
+        - description: related cell criterion
+          in: query
+          name: searchRelatedCell
+          required: false
+          schema:
+            type: string
+        - description: relation type criterion
+          in: query
+          name: searchRelatedType
+          required: false
+          schema:
+            type: string
+        - description: first result pagination criterion
+          in: query
+          name: firstResult
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - description: page size pagination criterion
+          in: query
+          name: pageSize
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - description: order criterion
+          in: query
+          name: orderExprType
+          required: false
+          schema:
+            type: string
+            enum:
+              - direction
+              - relatedCell
+              - relatedType
+              - relatedContext
+        - description: pagination order
+          in: query
+          name: ascOrDesc
+          required: false
+          schema:
+            type: string
+            enum:
+              - ASC
+              - DESC
+      responses:
+        '200':
+          content:
+            application/json:
+              examples:
+                Information model relations:
+                  description: Information model relations
+                  value:
+                    data:
+                      - relationType: IS_A
+                        name: AnyDataType
+                        nodeType: DATA_TYPES
+                        direction: origin
+                      - relationType: IS_PART_OF
+                        name: PatientInformation
+                        nodeType: DATA_TYPES
+                        direction: origin
+                      - relationType: IS_A_INVERSE
+                        name: Address
+                        nodeType: DATA_TYPES
+                        direction: destination
+                      - relationType: IS_A_INVERSE
+                        name: MaritalStatus
+                        nodeType: DATA_TYPES
+                        direction: destination
+                      - relationType: IS_A_INVERSE
+                        name: isAdult
+                        nodeType: DATA_TYPES
+                        direction: destination
+                    pagination:
+                      totalResults: 11
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InformationModelRelation'
+          description: >-
+            Successful operation. Returns the list of related nodes together
+            with pagination info
+      summary: Get Information model node relations in the graph it belongs
+      tags:
+        - Information Model API
   /informationModel/{companyID}/{informationModelID}/node/{name}/relatedNodes/{edgeType}:
     get:
       operationId: getRelatedNodes
@@ -1239,171 +1352,6 @@ paths:
       summary: Get Information model nodes/attributes of specific type
       tags:
         - Information Model API
-  /informationModelEditor/{companyID}:
-    delete:
-      operationId: deleteInformationModelMxgraphFile
-      parameters:
-        - description: ID of the company
-          in: path
-          name: companyID
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          content:
-            application/json:
-              examples:
-                Error while deleting information model graph state:
-                  description: Error while deleting information model graph state
-                  value: false
-                Successful information model graph state deletion:
-                  description: Successful information model graph state deletion
-                  value: true
-          description: >-
-            Successful operation. Returns boolean value indicated actual
-            information model editor graph state deletion
-      summary: Delete the Information model editor graph state
-      tags:
-        - Information Model Editor API
-    get:
-      operationId: getInformationModelMxgraphFile
-      parameters:
-        - description: ID of the company
-          in: path
-          name: companyID
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          content:
-            application/zip: {}
-          description: Successful operation. Returns the editor graph state
-      summary: Get Information model editor graph state
-      tags:
-        - Information Model Editor API
-  /informationModelEditor/{companyID}/{workspaceID}:
-    put:
-      description: The graph state is stored together with the ontology models
-      operationId: putInformationModelMxgraphFile
-      parameters:
-        - description: ID of the company
-          in: path
-          name: companyID
-          required: true
-          schema:
-            type: string
-        - description: ID of the workspace that will be used for getting models information
-          in: path
-          name: workspaceID
-          required: true
-          schema:
-            type: string
-      requestBody:
-        content:
-          multipart/form-data:
-            schema:
-              required:
-                - attachment
-              type: object
-              properties:
-                attachment:
-                  type: array
-                  items:
-                    type: string
-                    format: binary
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: boolean
-          description: OK
-      summary: Store Information model editor graph state
-      tags:
-        - Information Model Editor API
-  /informationModelEditor/{companyID}/{workspaceID}/export:
-    put:
-      description: The current editor graph state is provided as input
-      operationId: exportInformationModelMxgraphFile
-      parameters:
-        - description: ID of the company
-          in: path
-          name: companyID
-          required: true
-          schema:
-            type: string
-        - description: ID of the workspace that will be used for getting models information
-          in: path
-          name: workspaceID
-          required: true
-          schema:
-            type: string
-      requestBody:
-        content:
-          multipart/form-data:
-            schema:
-              required:
-                - attachment
-              type: object
-              properties:
-                attachment:
-                  type: array
-                  items:
-                    type: string
-                    format: binary
-      responses:
-        '200':
-          content:
-            application/zip: {}
-          description: >-
-            Successful operation. Returns the editor graph state and underlying
-            ontology models in a ZIP file
-      summary: >-
-        Export Information model editor state (editor graph state and underlying
-        ontology models)
-      tags:
-        - Information Model Editor API
-  /pdp/{companyID}:
-    post:
-      operationId: requestPolicyDecision
-      parameters:
-        - description: ID of the company (domain)
-          in: path
-          name: companyID
-          required: true
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Request'
-          application/xacml+xml:
-            schema:
-              $ref: '#/components/schemas/Request'
-          application/xml:
-            schema:
-              $ref: '#/components/schemas/Request'
-        description: the XACML request
-        required: true
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/XacmlResponseExtended'
-            application/xacml+xml:
-              schema:
-                $ref: '#/components/schemas/XacmlResponseExtended'
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/XacmlResponseExtended'
-          description: Successful operation. Returns the XACML response
-      summary: Evaluates a XACML Policy Decision request
-      tags:
-        - Policy Decision Point API
   /pdp/{companyID}/conflicts:
     post:
       operationId: generateConflictsAndAlternativeActions
@@ -1414,60 +1362,328 @@ paths:
           required: true
           schema:
             type: string
+        - description: >-
+            allows suggestion of purposes irrelevant to the given one by the DPW
+            designer
+          in: query
+          name: flexiblePurpose
+          required: true
+          schema:
+            type: boolean
+        - description: >-
+            allow suggestion of actors irrelevant to the given one by the DPW
+            designer
+          in: query
+          name: flexibleActor
+          required: true
+          schema:
+            type: boolean
       requestBody:
         content:
           application/json:
+            examples:
+              Conflict request example:
+                description: Conflict request example
+                value:
+                  intention:
+                    purpose: Estimate_Fitness_Level
+                    actor:
+                      concept: User
+                      constraint: null
+                    operation:
+                      concept: PublishResults
+                      constraint: null
+                    resource:
+                      concept: TrainingMeasurements
+                      constraint: null
+                    context: null
+                  usageConstraints:
+                    '@context':
+                      upcast: https://www.upcast-project.eu/upcast-vocab/1.0/
+                      dcat: http://www.w3.org/ns/dcat#
+                      dpv: https://w3id.org/dpv#
+                      foaf: http://xmlns.com/foaf/0.1/
+                      idsa-core: https://w3id.org/idsa/core/
+                      dct: http://purl.org/dc/terms/
+                      odrl: http://www.w3.org/ns/odrl/2/
+                    '@graph':
+                      - '@id': >-
+                          http://upcast-project.eu/distribution/example-distribution-dataset-1
+                        '@type': dcat:Distribution
+                        dct:description: Example Distribution of a Dataset
+                        dct:format: csv
+                        dct:title: CSV Distribution of Dataset 1
+                        dcat:byteSize: 346
+                        dcat:mediaType: text/csv
+                      - '@id': http://upcast-project.eu/dataset/example-dataset-1
+                        '@type': dcat:Dataset
+                        dcat:theme:
+                          - http://www.upcast-project.com/TrainingMeasurements
+                        dct:title: Example Dataset
+                        dct:description: >-
+                          Example of a Dataset showing a minimal set of
+                          properties for Usage Constraints
+                        dct:publisher:
+                          '@id': >-
+                            https://upcast-project.eu/producer/example-data-provider
+                        idsa-core:Provider:
+                          '@id': >-
+                            https://upcast-project.eu/producer/example-data-provider
+                        dcat:distribution:
+                          '@id': http://upcast-project.eu/dataset/example-dataset-1
+                        odrl:hasPolicy:
+                          '@id': >-
+                            http://upcast-project.eu/policy/usage-constraint-example
+                      - '@id': >-
+                          https://upcast-project.eu/provider/example-data-provider
+                        '@type':
+                          - foaf:Agent
+                          - foaf:Organization
+                        foaf:name: Data Provider Organization
+                      - '@id': >-
+                          http://upcast-project.eu/policy/usage-constraint-example
+                        '@type': odrl:Offer
+                        odrl:permission:
+                          '@id': http://example.com/permission:001
+                          odrl:action:
+                            '@id': https://w3id.org/dpv#PublishResults
+                          odrl:assigner:
+                            '@id': http://www.upcast-project.com/nissa
+                          odrl:assignee:
+                            '@id': https://w3id.org/dpv#User
+                          odrl:target:
+                            '@id': http://www.upcast-project.com/TrainingMeasurements
+                          odrl:constraint:
+                            odrl:leftOperand: https://w3id.org/dpv#Purpose
+                            odrl:operator: odrl:eq
+                            odrl:rightOperand: https://w3id.org/dpv#RequestedServiceProvision
             schema:
-              $ref: '#/components/schemas/ApiIntention'
+              $ref: '#/components/schemas/ApiConflictRequest'
         description: >-
-          object containing purpose, context, actor, operation, resource
-          entities (concepts along with constraints) to be evaluated against the
-          underlying policy model
+          object containing DPW designer intention, i.e., purpose, context,
+          actor, operation, resource entities (concepts along with constraints)
+          and the usage contraints (expressed in ODRL) against which the given
+          intention will be evaluated
         required: true
       responses:
         '200':
           content:
             application/json:
+              examples:
+                Conflict example:
+                  description: Conflict example
+                  value:
+                    - intention:
+                        purpose: Estimate_Fitness_Level
+                        actor:
+                          concept: User
+                          concreteEntity: null
+                          constraint: null
+                        operation:
+                          concept: PublishResults
+                          concreteEntity: null
+                          constraint: null
+                        resource:
+                          concept: TrainingMeasurements
+                          concreteEntity: null
+                          constraint: null
+                        context: null
+                      updatedIntention:
+                        purpose: null
+                        actor: null
+                        operation: null
+                        resource: null
+                        context: null
+                        combinedResources: []
+                        negativePreActions: []
+                        negativePostActions: []
+                        positivePreActions: []
+                        positivePostActions: []
+                      originalRuleIds:
+                        - http://example.com/permission:001
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ApiConflict'
+                $ref: '#/components/schemas/ApiConflict'
           description: >-
-            Successful operation. Returns a list of conflicts along with their
-            potential resolution
+            Successful operation. Returns a list of conflicts formed as a given
+            intention and an updatedItention if such potential resolution
+            exists, or no updatedIntention otherwise
       summary: >-
         Evaluates an action to be performed for a purpose under some context
-        against the underlying policy model and proposes possible fixes
+        against given usage constraints of the requested resource and proposes
+        possible fixes
       tags:
         - Policy Decision Point API
-  /pdp/{companyID}/{workflowModelID}:
+  /pdp/{companyID}/odrlConflicts:
     post:
-      operationId: generateComplianceDirectives
+      operationId: generateODRLConflicts
       parameters:
-        - description: ID of the company (domain)
-          in: path
+        - in: path
           name: companyID
           required: true
           schema:
             type: string
-        - description: the ID of the original workflow model stored for the company
-          in: path
-          name: workflowModelID
+        - description: >-
+            allows suggestion of purposes irrelevant to the given one by the DPW
+            designer
+          in: query
+          name: flexiblePurpose
           required: true
           schema:
-            type: string
+            type: boolean
+        - description: >-
+            allow suggestion of actors irrelevant to the given one by the DPW
+            designer
+          in: query
+          name: flexibleActor
+          required: true
+          schema:
+            type: boolean
+      requestBody:
+        content:
+          application/json:
+            examples:
+              ODRL Conflict request example:
+                description: ODRL Conflict request example
+                value:
+                  odrlRequest:
+                    '@context':
+                      - http://www.w3.org/ns/odrl.jsonld
+                      - dcat: http://www.w3.org/ns/dcat#
+                        dpv: https://w3id.org/dpv#
+                        rdf: https://www.w3.org/TR/rdf12-schema#
+                    '@type': Policy
+                    profile: http://example.com/odrl:profile:03
+                    uid: http://example.com/policy:001
+                    permission:
+                      - target: https://w3id.org/dpv#TrainingMeasurements
+                        assigner: http://www.upcast-project.com/nissa
+                        assignee: https://w3id.org/dpv#Trainer
+                        action: https://w3id.org/dpv#PublishResults
+                        constraint:
+                          leftOperand: https://w3id.org/dpv#Purpose
+                          operator: eq
+                          rightOperand: http://www.upcast-project.com/Leaderboard
+                  usageConstraints:
+                    '@context':
+                      upcast: https://www.upcast-project.eu/upcast-vocab/1.0/
+                      dcat: http://www.w3.org/ns/dcat#
+                      dpv: https://w3id.org/dpv#
+                      foaf: http://xmlns.com/foaf/0.1/
+                      idsa-core: https://w3id.org/idsa/core/
+                      dct: http://purl.org/dc/terms/
+                      odrl: http://www.w3.org/ns/odrl/2/
+                    '@graph':
+                      - '@id': >-
+                          http://upcast-project.eu/distribution/example-distribution-dataset-1
+                        '@type': dcat:Distribution
+                        dct:description: Example Distribution of a Dataset
+                        dct:format: csv
+                        dct:title: CSV Distribution of Dataset 1
+                        dcat:byteSize: 346
+                        dcat:mediaType: text/csv
+                      - '@id': http://upcast-project.eu/dataset/example-dataset-1
+                        '@type': dcat:Dataset
+                        dcat:theme:
+                          - >-
+                            http://www.ict-abovo.eu/ontologies/InformationModel#TrainingMeasurements
+                        dct:title: Example Dataset
+                        dct:description: >-
+                          Example of a Dataset showing a minimal set of
+                          properties for Usage Constraints
+                        dct:publisher:
+                          '@id': >-
+                            https://upcast-project.eu/producer/example-data-provider
+                        idsa-core:Provider:
+                          '@id': >-
+                            https://upcast-project.eu/producer/example-data-provider
+                        dcat:distribution:
+                          '@id': http://upcast-project.eu/dataset/example-dataset-1
+                        odrl:hasPolicy:
+                          '@id': >-
+                            http://upcast-project.eu/policy/usage-constraint-example
+                      - '@id': >-
+                          https://upcast-project.eu/provider/example-data-provider
+                        '@type':
+                          - foaf:Agent
+                          - foaf:Organization
+                        foaf:name: Data Provider Organization
+                      - '@id': >-
+                          http://upcast-project.eu/policy/usage-constraint-example
+                        '@type': odrl:Offer
+                        odrl:permission:
+                          '@id': http://example.com/permission:001
+                          odrl:action:
+                            '@id': https://w3id.org/dpv#PublishResults
+                          odrl:assigner:
+                            '@id': http://www.upcast-project.com/nissa
+                          odrl:assignee:
+                            '@id': https://w3id.org/dpv#User
+                          odrl:target:
+                            '@id': http://www.upcast-project.com/TrainingMeasurements
+                          odrl:constraint:
+                            odrl:leftOperand: dpv:Purpose
+                            odrl:operator: odrl:eq
+                            odrl:rightOperand: >-
+                              http://www.upcast-project.com/Estimate_Fitness_Level
+            schema:
+              $ref: '#/components/schemas/ApiODRLConflictRequest'
+        description: >-
+          object containing the odrl:request and the odrl:offer along with the
+          description of the dataset (dcat:Dataset), i.e, a usage constraints
+          object
+        required: true
       responses:
         '200':
           content:
-            text/plain:
+            application/json:
               examples:
-                Verified workflow model ID:
-                  description: Verified workflow model ID
-                  value: WFM_16afa1ee8a564d2086f05e901a39a80a_verified
-          description: the ID of the verified workflow model stored for the company
-      summary: >-
-        Verifies a given workflow model, in terms of bilateral associations'
-        verification
+                Conflict example:
+                  description: Conflict example
+                  value:
+                    - intention:
+                        purpose: Leaderboard
+                        actor:
+                          concept: Trainer
+                          concreteEntity: null
+                          constraint: null
+                        operation:
+                          concept: PublishResults
+                          concreteEntity: null
+                          constraint: null
+                        resource:
+                          concept: TrainingMeasurements
+                          concreteEntity: null
+                          constraint: null
+                        context: null
+                      updatedIntention:
+                        purpose: Estimate_Fitness_Level
+                        actor:
+                          concept: Trainer
+                          concreteEntity: null
+                          constraint: null
+                        operation:
+                          concept: PublishResults
+                          concreteEntity: null
+                          constraint: null
+                        resource:
+                          concept: TrainingMeasurements
+                          concreteEntity: null
+                          constraint: null
+                        context: null
+                        combinedResources: []
+                        negativePreActions: []
+                        negativePostActions: []
+                        positivePreActions: []
+                        positivePostActions: []
+                      originalRuleIds:
+                        - http://example.com/permission:001
+              schema:
+                $ref: '#/components/schemas/ApiConflict'
+          description: >-
+            Successful operation. Returns a list of conflicts formed as a given
+            intention and an updatedItention if such potential resolution
+            exists, or no updatedIntention otherwise
+      summary: Evaluates an odrl:request against an odrl:offer
       tags:
         - Policy Decision Point API
   /policyModel/{companyID}:
@@ -2310,8 +2526,8 @@ paths:
         content:
           application/json:
             examples:
-              Permission rule update example:
-                description: Permission rule update example
+              Search rule criteria example:
+                description: Search rule criteria example
                 value:
                   purpose: RightOfAccess
             schema:
@@ -2636,901 +2852,8 @@ paths:
       summary: Get rule
       tags:
         - Policy Model API
-  /processModel/{companyID}/{workspaceID}/models:
-    get:
-      description: >-
-        All process models that have been created and not deleted within the
-        company and current workspace will be listed.
-      operationId: listProcessModels
-      parameters:
-        - description: ID of the company
-          in: path
-          name: companyID
-          required: true
-          schema:
-            type: string
-        - description: ID of the workspace
-          in: path
-          name: workspaceID
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ApiProcessModelBasicInfo'
-          description: >-
-            Successful operation. Returns the list of all currently existing
-            process models
-      summary: Display all process models in a list
-      tags:
-        - Workflow Model API
-  /processModel/{companyID}/{workspaceID}/process:
-    post:
-      description: >-
-        The process model will be created in the specified company/workspace
-        from scratch if it does not exist, and get loaded into the temp model of
-        the returned ID (which will be flushed to the stored ontology upon save)
-      operationId: createProcessModel
-      parameters:
-        - description: ID of the company
-          in: path
-          name: companyID
-          required: true
-          schema:
-            type: string
-        - description: ID of the workspace
-          in: path
-          name: workspaceID
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          content:
-            text/plain:
-              examples:
-                temp process model ID:
-                  description: temp process model ID
-                  value: 16afa1ee8a564d2086f05e901a39a80a
-          description: Successful operation. Returns the ID of the temp process model
-      summary: Create temp process model
-      tags:
-        - Workflow Model API
-  /processModel/{companyID}/{workspaceID}/{processModelID}:
-    delete:
-      description: >-
-        Deletes the specified process model, thereby removing all associated
-        models from the ontology.
-      operationId: deleteProcessModel
-      parameters:
-        - description: ID of the company
-          in: path
-          name: companyID
-          required: true
-          schema:
-            type: string
-        - description: ID of the workspace
-          in: path
-          name: workspaceID
-          required: true
-          schema:
-            type: string
-        - description: ID of the process model
-          in: path
-          name: processModelID
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: boolean
-          description: >-
-            Successful operation. Returns true if process model successfully
-            deleted.
-      summary: Delete a previously created process model
-      tags:
-        - Workflow Model API
-    get:
-      description: >-
-        Loads the specified process model from the ontology onto the appropriate
-        object.
-      operationId: openProcessModel
-      parameters:
-        - description: ID of the company
-          in: path
-          name: companyID
-          required: true
-          schema:
-            type: string
-        - description: ID of the workspace
-          in: path
-          name: workspaceID
-          required: true
-          schema:
-            type: string
-        - description: ID of the process model
-          in: path
-          name: processModelID
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiProcessModel'
-          description: >-
-            Successful operation. Returns the object representing the specified
-            process model
-      summary: Open a previously created process model
-      tags:
-        - Workflow Model API
-    put:
-      description: >-
-        Updates the specified process model with the information contained in
-        the provided process model object.
-      operationId: updateProcessModel
-      parameters:
-        - description: ID of the company
-          in: path
-          name: companyID
-          required: true
-          schema:
-            type: string
-        - description: ID of the workspace
-          in: path
-          name: workspaceID
-          required: true
-          schema:
-            type: string
-        - description: ID of the process model
-          in: path
-          name: processModelID
-          required: true
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ApiProcessModel'
-        required: true
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: boolean
-          description: >-
-            Successful operation. Returns true if process model successfully
-            updated.
-      summary: Update a previously created process model
-      tags:
-        - Workflow Model API
-  /processModel/{companyID}/{workspaceID}/{processModelID}/edge:
-    post:
-      description: >-
-        A new edge will be created and associated with the process model at
-        hand. This will be defined to connect the task nodes specified as its
-        source and destination in the edge object passed as a parameter. Mainly
-        designed to facilitate the creation, through the UI, of a new edge
-        connecting two existing tasks.
-      operationId: createNewEdge
-      parameters:
-        - description: ID of the company
-          in: path
-          name: companyID
-          required: true
-          schema:
-            type: string
-        - description: ID of the workspace
-          in: path
-          name: workspaceID
-          required: true
-          schema:
-            type: string
-        - description: ID of the process model
-          in: path
-          name: processModelID
-          required: true
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ApiWorkflowEdge'
-        required: true
-      responses:
-        '200':
-          content:
-            text/plain:
-              examples:
-                edge ID:
-                  description: edge ID
-                  value: 16afa1ee8a564d2086f05e901a39a80a
-          description: Successful operation. Returns the ID of the edge
-      summary: Create a new edge
-      tags:
-        - Workflow Model API
-  /processModel/{companyID}/{workspaceID}/{processModelID}/edge/{edgeID}:
-    delete:
-      description: The edge specified through its ID is removed from the process model.
-      operationId: deleteEdge
-      parameters:
-        - description: ID of the company
-          in: path
-          name: companyID
-          required: true
-          schema:
-            type: string
-        - description: ID of the workspace
-          in: path
-          name: workspaceID
-          required: true
-          schema:
-            type: string
-        - description: ID of the process model
-          in: path
-          name: processModelID
-          required: true
-          schema:
-            type: string
-        - description: ID of the edge to be deleted
-          in: path
-          name: edgeID
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          content:
-            text/plain:
-              examples:
-                edge ID:
-                  description: edge ID
-                  value: 16afa1ee8a564d2086f05e901a39a80a
-          description: Successful operation. Returns the ID of the removed edge.
-      summary: Delete an edge
-      tags:
-        - Workflow Model API
-    get:
-      description: >-
-        Provides an object representing the process edge specified through the
-        corresponding ID.
-      operationId: getEdge
-      parameters:
-        - description: ID of the company
-          in: path
-          name: companyID
-          required: true
-          schema:
-            type: string
-        - description: ID of the workspace
-          in: path
-          name: workspaceID
-          required: true
-          schema:
-            type: string
-        - description: ID of the process model
-          in: path
-          name: processModelID
-          required: true
-          schema:
-            type: string
-        - description: ID of the edge
-          in: path
-          name: edgeID
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiWorkflowEdge'
-          description: Successful operation. Returns an edge object.
-      summary: Retrieve an edge by ID
-      tags:
-        - Workflow Model API
-    put:
-      description: >-
-        Updates a process edge specified through its ID, by setting the values
-        defined within an edge object passed as a parameter.
-      operationId: updateEdge
-      parameters:
-        - description: ID of the company
-          in: path
-          name: companyID
-          required: true
-          schema:
-            type: string
-        - description: ID of the workspace
-          in: path
-          name: workspaceID
-          required: true
-          schema:
-            type: string
-        - description: ID of the process model
-          in: path
-          name: processModelID
-          required: true
-          schema:
-            type: string
-        - description: ID of the edge to be updated
-          in: path
-          name: edgeID
-          required: true
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ApiWorkflowEdge'
-        required: true
-      responses:
-        '200':
-          content:
-            text/plain:
-              examples:
-                edge ID:
-                  description: edge ID
-                  value: 16afa1ee8a564d2086f05e901a39a80a
-          description: Successful operation. Returns the ID of the updated edge
-      summary: Update an edge
-      tags:
-        - Workflow Model API
-  /processModel/{companyID}/{workspaceID}/{processModelID}/edge/{edgeID}/type:
-    put:
-      description: >-
-        By default, each new edge is created without a type ('plain'). Through
-        this method its type can be set to be either control or data edge.
-      operationId: updateEdgeType
-      parameters:
-        - description: ID of the company
-          in: path
-          name: companyID
-          required: true
-          schema:
-            type: string
-        - description: ID of the workspace
-          in: path
-          name: workspaceID
-          required: true
-          schema:
-            type: string
-        - description: ID of the process model
-          in: path
-          name: processModelID
-          required: true
-          schema:
-            type: string
-        - description: ID of the edge to be updated
-          in: path
-          name: edgeID
-          required: true
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ApiWorkflowEdge'
-        required: true
-      responses:
-        '200':
-          content:
-            text/plain:
-              examples:
-                edge type:
-                  description: edge type
-                  value: DataEdges
-          description: >-
-            Successful operation. Returns the type of the edge as string,
-            assuming one of the following three values: 'PLAIN', 'ControlEdges',
-            'DataEdges'.
-      summary: Update the type of an edge
-      tags:
-        - Workflow Model API
-  /processModel/{companyID}/{workspaceID}/{processModelID}/export:
-    get:
-      description: Exports the specified process model as an OWL ontology.
-      operationId: exportProcessModel
-      parameters:
-        - description: ID of the company
-          in: path
-          name: companyID
-          required: true
-          schema:
-            type: string
-        - description: ID of the workspace
-          in: path
-          name: workspaceID
-          required: true
-          schema:
-            type: string
-        - description: ID of the process model
-          in: path
-          name: processModelID
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          content:
-            text/plain: {}
-          description: Successful operation. Returns the process model owl file.
-      summary: Retrieve the OWL representation of a process model
-      tags:
-        - Workflow Model API
-  /processModel/{companyID}/{workspaceID}/{processModelID}/exportRichModel:
-    get:
-      description: >-
-        Exports the specified process model as the corresponding OWL ontology.
-        It also exports the full Information Model and the basic concepts of
-        Workflow Models.
-      operationId: exportRichProcessModel
-      parameters:
-        - description: ID of the company
-          in: path
-          name: companyID
-          required: true
-          schema:
-            type: string
-        - description: ID of the workspace
-          in: path
-          name: workspaceID
-          required: true
-          schema:
-            type: string
-        - description: ID of the process model
-          in: path
-          name: processModelID
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          content:
-            text/plain: {}
-          description: Successful operation. Returns the enriched process model owl file.
-      summary: Retrieve an enriched OWL representation of a process model
-      tags:
-        - Workflow Model API
-  /processModel/{companyID}/{workspaceID}/{processModelID}/graph:
-    get:
-      description: >-
-        Returns the mxgraph zip file that has been created for the specified
-        process model.
-      operationId: getProcessModelMxGraphFile
-      parameters:
-        - description: ID of the company
-          in: path
-          name: companyID
-          required: true
-          schema:
-            type: string
-        - description: ID of the workspace
-          in: path
-          name: workspaceID
-          required: true
-          schema:
-            type: string
-        - description: ID of the process model
-          in: path
-          name: processModelID
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          content:
-            application/zip: {}
-          description: Successful operation. Returns the mxgraph zip file.
-      summary: Retrieve the mxgraph zip file corresponding to a given process model
-      tags:
-        - Workflow Model API
-    put:
-      description: >-
-        Saves the specified process model to the ontology, thereby also storing
-        the associated mxgraph zip file for future use. The ZIP file should be
-        uploaded using 'multipart/form-data' media type using the 'attachment'
-        input.
-      operationId: saveProcessModelWithMxGraphFile
-      parameters:
-        - description: ID of the company
-          in: path
-          name: companyID
-          required: true
-          schema:
-            type: string
-        - description: ID of the workspace
-          in: path
-          name: workspaceID
-          required: true
-          schema:
-            type: string
-        - description: ID of the process model
-          in: path
-          name: processModelID
-          required: true
-          schema:
-            type: string
-      requestBody:
-        content:
-          multipart/form-data:
-            schema:
-              required:
-                - attachment
-              type: object
-              properties:
-                attachment:
-                  type: array
-                  description: The mxgraph zip file
-                  items:
-                    type: string
-                    format: binary
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: boolean
-          description: >-
-            Successful operation. Returns true if process model successfully
-            saved.
-      summary: Save a process model
-      tags:
-        - Workflow Model API
-  /processModel/{companyID}/{workspaceID}/{processModelID}/initiators:
-    put:
-      description: >-
-        Allows the workflow designer to provide a list of abstract and/or
-        concrete actors as initiators. Note that this function removes all
-        previously initiators associated prior to adding the new ones.
-      operationId: setProcessModelInitiators
-      parameters:
-        - description: ID of the company
-          in: path
-          name: companyID
-          required: true
-          schema:
-            type: string
-        - description: ID of the workspace
-          in: path
-          name: workspaceID
-          required: true
-          schema:
-            type: string
-        - description: ID of the process model
-          in: path
-          name: processModelID
-          required: true
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ApiInitiators'
-        required: true
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: boolean
-          description: Successful operation. Returns true if initiators successfully set.
-      summary: Associate one or more initiators to a process model
-      tags:
-        - Workflow Model API
-  /processModel/{companyID}/{workspaceID}/{processModelID}/purposes:
-    put:
-      description: >-
-        Adds a set of possible process purposes to the process model, implying
-        that such a workflow can be executed in order for any of these purposes
-        to be served. Note that this method removes any purposes previously
-        defined.
-      operationId: setProcessModelPurposes
-      parameters:
-        - description: ID of the company
-          in: path
-          name: companyID
-          required: true
-          schema:
-            type: string
-        - description: ID of the workspace
-          in: path
-          name: workspaceID
-          required: true
-          schema:
-            type: string
-        - description: ID of the process model
-          in: path
-          name: processModelID
-          required: true
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ApiPurposes'
-        required: true
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: boolean
-          description: Successful operation. Returns true if purposes successfully set.
-      summary: Associate one or more purposes to a process model
-      tags:
-        - Workflow Model API
-  /processModel/{companyID}/{workspaceID}/{processModelID}/task:
-    post:
-      description: >-
-        A new task node will be created and associated with the process model at
-        hand. This method only defines its operation, passed as a parameter as
-        part of the corresponding task node object. Mainly designed to
-        facilitate the creation of new task nodes through the UI, based on
-        operation.
-      operationId: createNewTaskNode
-      parameters:
-        - description: ID of the company
-          in: path
-          name: companyID
-          required: true
-          schema:
-            type: string
-        - description: ID of the workspace
-          in: path
-          name: workspaceID
-          required: true
-          schema:
-            type: string
-        - description: ID of the process model
-          in: path
-          name: processModelID
-          required: true
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ApiTaskNode'
-        required: true
-      responses:
-        '200':
-          content:
-            text/plain:
-              examples:
-                task node ID:
-                  description: task node ID
-                  value: 16afa1ee8a564d2086f05e901a39a80a
-          description: Successful operation. Returns the ID of the task node
-      summary: Create a new task node
-      tags:
-        - Workflow Model API
-  /processModel/{companyID}/{workspaceID}/{processModelID}/task/{taskNodeID}:
-    delete:
-      description: >-
-        The task node specified through its ID is removed from the process
-        model, together with its ingoing/outgoing edges.
-      operationId: deleteTaskNode
-      parameters:
-        - description: ID of the company
-          in: path
-          name: companyID
-          required: true
-          schema:
-            type: string
-        - description: ID of the workspace
-          in: path
-          name: workspaceID
-          required: true
-          schema:
-            type: string
-        - description: ID of the process model
-          in: path
-          name: processModelID
-          required: true
-          schema:
-            type: string
-        - description: ID of the task node to be deleted
-          in: path
-          name: taskNodeID
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          content:
-            text/plain:
-              examples:
-                task node ID:
-                  description: task node ID
-                  value: 16afa1ee8a564d2086f05e901a39a80a
-          description: Successful operation. Returns the ID of the removed task node.
-      summary: Delete a task node
-      tags:
-        - Workflow Model API
-    get:
-      description: >-
-        Provides an object representing the process task node specified through
-        the corresponding ID.
-      operationId: getTaskNode
-      parameters:
-        - description: ID of the company
-          in: path
-          name: companyID
-          required: true
-          schema:
-            type: string
-        - description: ID of the workspace
-          in: path
-          name: workspaceID
-          required: true
-          schema:
-            type: string
-        - description: ID of the process model
-          in: path
-          name: processModelID
-          required: true
-          schema:
-            type: string
-        - description: ID of the process task node
-          in: path
-          name: taskNodeID
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiTaskNode'
-          description: Successful operation. Returns a task node object.
-      summary: Retrieve a task node by ID
-      tags:
-        - Workflow Model API
-    put:
-      description: >-
-        Updates a process task node specified through its ID, by setting the
-        values defined within a task node object passed as a parameter.
-      operationId: updateTaskNode
-      parameters:
-        - description: ID of the company
-          in: path
-          name: companyID
-          required: true
-          schema:
-            type: string
-        - description: ID of the workspace
-          in: path
-          name: workspaceID
-          required: true
-          schema:
-            type: string
-        - description: ID of the process model
-          in: path
-          name: processModelID
-          required: true
-          schema:
-            type: string
-        - description: ID of the task node to be updated
-          in: path
-          name: taskNodeID
-          required: true
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ApiTaskNode'
-        required: true
-      responses:
-        '200':
-          content:
-            text/plain:
-              examples:
-                task node ID:
-                  description: task node ID
-                  value: 16afa1ee8a564d2086f05e901a39a80a
-          description: Successful operation. Returns the ID of the updated task node
-      summary: Update a task node
-      tags:
-        - Workflow Model API
-  /processModel/{companyID}/{workspaceID}/{processModelID}/verify:
-    get:
-      description: >-
-        Constructs the verified and transformed (if needed) version of the
-        specified process model.
-      operationId: verifyProcessModel
-      parameters:
-        - description: ID of the company
-          in: path
-          name: companyID
-          required: true
-          schema:
-            type: string
-        - description: ID of the workspace
-          in: path
-          name: workspaceID
-          required: true
-          schema:
-            type: string
-        - description: ID of the process model
-          in: path
-          name: processModelID
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiVerifiedProcessModel'
-          description: >-
-            Successful operation. Returns an object representing the verified
-            version of the initial process model.
-      summary: Verify a user-defined process model
-      tags:
-        - Workflow Model API
 components:
   schemas:
-    APIRequiredAction:
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/ApiPolicyModelEntity'
-        - type: object
-          properties:
-            action:
-              $ref: '#/components/schemas/ApiAction'
-            sequenceConstraint:
-              type: string
-    APISimplifiedRequiredAction:
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/ApiSimplifiedPolicyModelEntity'
-        - type: object
-          properties:
-            action:
-              $ref: '#/components/schemas/ApiSimplifiedAction'
-            sequenceConstraint:
-              type: string
-    Advice:
-      type: object
-      properties:
-        adviceId:
-          type: string
-          xml:
-            name: AdviceId
-            attribute: true
-        attributeAssignments:
-          type: array
-          xml:
-            name: AttributeAssignment
-          items:
-            $ref: '#/components/schemas/AttributeAssignment'
-      xml:
-        name: Advice
-        namespace: urn:oasis:names:tc:xacml:3.0:core:schema:wd-17
     ApiAction:
       type: object
       allOf:
@@ -3547,18 +2870,16 @@ components:
               $ref: '#/components/schemas/ApiPolicyModelEntity'
     ApiActionEntity:
       type: object
-      properties:
-        concept:
-          type: string
-        constraint:
-          oneOf:
-            - $ref: '#/components/schemas/APISimplifiedRequiredAction'
-            - $ref: '#/components/schemas/ApiActionEntity'
-            - $ref: '#/components/schemas/ApiSimplifiedAction'
-            - $ref: '#/components/schemas/ApiSimplifiedExpression'
-            - $ref: '#/components/schemas/ApiSimplifiedLogicalRelation'
-            - $ref: '#/components/schemas/ApiSimplifiedVariable'
-            - $ref: '#/components/schemas/ApiSimplifiedVariableConstraint'
+      allOf:
+        - $ref: '#/components/schemas/ApiSimplifiedPolicyModelEntity'
+        - type: object
+          properties:
+            concept:
+              type: string
+            concreteEntity:
+              type: string
+            constraint:
+              $ref: '#/components/schemas/ApiSimplifiedPolicyModelEntity'
     ApiConflict:
       type: object
       properties:
@@ -3570,88 +2891,45 @@ components:
             type: string
         updatedIntention:
           $ref: '#/components/schemas/ApiUpdatedIntention'
+    ApiConflictRequest:
+      type: object
+      properties:
+        intention:
+          $ref: '#/components/schemas/ApiIntention'
+        usageConstraints:
+          type: object
     ApiEnhancedEntity:
       type: object
       allOf:
         - $ref: '#/components/schemas/ApiPolicyModelEntity'
         - type: object
           properties:
+            concreteEntity:
+              type: string
             constraint:
               $ref: '#/components/schemas/ApiPolicyModelEntity'
             entityBase:
               type: string
-    ApiExpression:
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/ApiPolicyModelEntity'
-        - type: object
-          properties:
-            isNested:
-              type: boolean
-            operator:
-              type: string
-            policyModelEntityValue:
-              $ref: '#/components/schemas/ApiPolicyModelEntity'
-            stringValue:
-              type: string
-            subject:
-              type: string
-            valueType:
-              type: string
-              enum:
-                - Literal
-                - InfoModelConcept
-                - Variable
-                - VariableBasedConstraint
-    ApiInitiators:
-      type: object
-      description: The list of initiators
-      allOf:
-        - $ref: '#/components/schemas/ApiWorkflowModelEntity'
-        - type: object
-          properties:
-            initiators:
-              type: array
-              items:
-                type: string
     ApiIntention:
       type: object
       properties:
         actor:
           $ref: '#/components/schemas/ApiActionEntity'
         context:
-          oneOf:
-            - $ref: '#/components/schemas/APIRequiredAction'
-            - $ref: '#/components/schemas/ApiAction'
-            - $ref: '#/components/schemas/ApiEnhancedEntity'
-            - $ref: '#/components/schemas/ApiExpression'
-            - $ref: '#/components/schemas/ApiLogicalRelation'
-            - $ref: '#/components/schemas/ApiRule'
-            - $ref: '#/components/schemas/ApiVariable'
-            - $ref: '#/components/schemas/ApiVariableConstraint'
+          $ref: '#/components/schemas/ApiPolicyModelEntity'
         operation:
           $ref: '#/components/schemas/ApiActionEntity'
         purpose:
           type: string
         resource:
           $ref: '#/components/schemas/ApiActionEntity'
-    ApiLogicalRelation:
+    ApiODRLConflictRequest:
       type: object
-      allOf:
-        - $ref: '#/components/schemas/ApiPolicyModelEntity'
-        - type: object
-          properties:
-            children:
-              type: array
-              items:
-                $ref: '#/components/schemas/ApiPolicyModelEntity'
-            logicalRelationType:
-              type: string
-              enum:
-                - AND
-                - OR
-                - NOT
-                - XOR
+      properties:
+        odrlRequest:
+          type: object
+        usageConstraints:
+          type: object
     ApiPolicyModelEntity:
       type: object
       properties:
@@ -3659,52 +2937,7 @@ components:
           type: string
         label:
           type: string
-    ApiProcessModel:
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/ApiWorkflowModelEntity'
-        - type: object
-          properties:
-            description:
-              type: string
-            initiators:
-              type: array
-              items:
-                type: string
-            isVerified:
-              type: boolean
-            purposes:
-              type: array
-              items:
-                type: string
-            verified:
-              type: boolean
-    ApiProcessModelBasicInfo:
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/ApiWorkflowModelEntity'
-        - type: object
-          properties:
-            description:
-              type: string
-            isVerified:
-              type: boolean
-            verified:
-              type: boolean
-    ApiPurposes:
-      type: object
-      description: The list of purposes
-      allOf:
-        - $ref: '#/components/schemas/ApiWorkflowModelEntity'
-        - type: object
-          properties:
-            purposes:
-              type: array
-              items:
-                type: string
     ApiRule:
-      required:
-        - ruleType
       type: object
       allOf:
         - $ref: '#/components/schemas/ApiPolicyModelEntity'
@@ -3730,104 +2963,10 @@ components:
                 - Permissions
                 - Prohibitions
                 - Obligations
-    ApiSimplifiedAction:
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/ApiSimplifiedPolicyModelEntity'
-        - type: object
-          properties:
-            actor:
-              $ref: '#/components/schemas/ApiSimplifiedPolicyModelEntity'
-            operation:
-              $ref: '#/components/schemas/ApiSimplifiedPolicyModelEntity'
-            resource:
-              $ref: '#/components/schemas/ApiSimplifiedPolicyModelEntity'
-    ApiSimplifiedExpression:
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/ApiSimplifiedPolicyModelEntity'
-        - type: object
-          properties:
-            isNested:
-              type: boolean
-            operator:
-              type: string
-            policyModelEntityValue:
-              $ref: '#/components/schemas/ApiSimplifiedPolicyModelEntity'
-            stringValue:
-              type: string
-            subject:
-              type: string
-            valueType:
-              type: string
-              enum:
-                - Literal
-                - InfoModelConcept
-                - Variable
-                - VariableBasedConstraint
-    ApiSimplifiedLogicalRelation:
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/ApiSimplifiedPolicyModelEntity'
-        - type: object
-          properties:
-            children:
-              type: array
-              items:
-                $ref: '#/components/schemas/ApiSimplifiedPolicyModelEntity'
-            logicalRelationType:
-              type: string
-              enum:
-                - AND
-                - OR
-                - NOT
-                - XOR
+      required:
+        - ruleType
     ApiSimplifiedPolicyModelEntity:
       type: object
-    ApiSimplifiedVariable:
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/ApiSimplifiedPolicyModelEntity'
-        - type: object
-          properties:
-            variableStructure:
-              type: string
-    ApiSimplifiedVariableConstraint:
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/ApiSimplifiedPolicyModelEntity'
-        - type: object
-          properties:
-            constraintProperty:
-              type: string
-            variableConstraintBase:
-              $ref: '#/components/schemas/ApiSimplifiedPolicyModelEntity'
-    ApiTaskNode:
-      type: object
-      description: The specified task node object
-      allOf:
-        - $ref: '#/components/schemas/ApiWorkflowModelEntity'
-        - type: object
-          properties:
-            controlSync:
-              type: boolean
-            dataSync:
-              type: boolean
-            description:
-              type: string
-            executionProfiles:
-              type: array
-              properties:
-                empty:
-                  type: boolean
-              items:
-                $ref: '#/components/schemas/ApiWorkflowModelEntity'
-            isControlSync:
-              type: boolean
-            isDataSync:
-              type: boolean
-            operation:
-              type: string
     ApiUpdatedIntention:
       type: object
       properties:
@@ -3838,15 +2977,7 @@ components:
           items:
             $ref: '#/components/schemas/ApiActionEntity'
         context:
-          oneOf:
-            - $ref: '#/components/schemas/APIRequiredAction'
-            - $ref: '#/components/schemas/ApiAction'
-            - $ref: '#/components/schemas/ApiEnhancedEntity'
-            - $ref: '#/components/schemas/ApiExpression'
-            - $ref: '#/components/schemas/ApiLogicalRelation'
-            - $ref: '#/components/schemas/ApiRule'
-            - $ref: '#/components/schemas/ApiVariable'
-            - $ref: '#/components/schemas/ApiVariableConstraint'
+          $ref: '#/components/schemas/ApiPolicyModelEntity'
         negativePostActions:
           type: array
           items:
@@ -3869,155 +3000,6 @@ components:
           type: string
         resource:
           $ref: '#/components/schemas/ApiActionEntity'
-    ApiVariable:
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/ApiPolicyModelEntity'
-        - type: object
-          properties:
-            variableStructure:
-              type: string
-    ApiVariableConstraint:
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/ApiPolicyModelEntity'
-        - type: object
-          properties:
-            constraintProperty:
-              type: string
-            variableConstraintBase:
-              $ref: '#/components/schemas/ApiPolicyModelEntity'
-    ApiVerifiedProcessModel:
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/ApiWorkflowModelEntity'
-        - type: object
-          properties:
-            description:
-              type: string
-            edges:
-              type: array
-              properties:
-                empty:
-                  type: boolean
-              items:
-                $ref: '#/components/schemas/ApiWorkflowModelEntity'
-            initiators:
-              type: array
-              items:
-                type: string
-            isVerified:
-              type: boolean
-            purposes:
-              type: array
-              items:
-                type: string
-            tasks:
-              type: array
-              properties:
-                empty:
-                  type: boolean
-              items:
-                $ref: '#/components/schemas/ApiWorkflowModelEntity'
-            verificationResult:
-              type: string
-            verified:
-              type: boolean
-    ApiWorkflowEdge:
-      type: object
-      description: The specified edge object
-      allOf:
-        - $ref: '#/components/schemas/ApiWorkflowModelEntity'
-        - type: object
-          properties:
-            conditions:
-              $ref: '#/components/schemas/ApiWorkflowModelEntity'
-            destinationTaskNodeID:
-              type: string
-            edgeDescription:
-              type: string
-            edgeType:
-              type: string
-            flowConstraints:
-              $ref: '#/components/schemas/ApiWorkflowModelEntity'
-            informationEntities:
-              type: array
-              properties:
-                empty:
-                  type: boolean
-              items:
-                $ref: '#/components/schemas/ApiWorkflowModelEntity'
-            sourceTaskNodeID:
-              type: string
-    ApiWorkflowModelEntity:
-      type: object
-      properties:
-        id:
-          type: string
-        label:
-          type: string
-    AssociatedAdvice:
-      required:
-        - advices
-      type: object
-      properties:
-        advices:
-          type: array
-          xml:
-            name: Advice
-          items:
-            $ref: '#/components/schemas/Advice'
-      xml:
-        name: AssociatedAdvice
-        namespace: urn:oasis:names:tc:xacml:3.0:core:schema:wd-17
-    Attr:
-      type: object
-      properties:
-        attributes:
-          $ref: '#/components/schemas/NamedNodeMap'
-        baseURI:
-          type: string
-        childNodes:
-          $ref: '#/components/schemas/NodeList'
-        firstChild:
-          $ref: '#/components/schemas/Node'
-        id:
-          type: boolean
-        lastChild:
-          $ref: '#/components/schemas/Node'
-        localName:
-          type: string
-        name:
-          type: string
-        namespaceURI:
-          type: string
-        nextSibling:
-          $ref: '#/components/schemas/Node'
-        nodeName:
-          type: string
-        nodeType:
-          type: integer
-          format: int32
-        nodeValue:
-          type: string
-        ownerDocument:
-          $ref: '#/components/schemas/Document'
-        ownerElement:
-          $ref: '#/components/schemas/Element'
-        parentNode:
-          $ref: '#/components/schemas/Node'
-        prefix:
-          type: string
-        previousSibling:
-          $ref: '#/components/schemas/Node'
-        schemaTypeInfo:
-          $ref: '#/components/schemas/TypeInfo'
-        specified:
-          type: boolean
-        textContent:
-          type: string
-        value:
-          type: string
     Attribute:
       required:
         - attributeName
@@ -4050,263 +3032,23 @@ components:
           type: string
         isMutable:
           type: boolean
-    AttributeAssignment:
+    CompositeSearchRuleCriteria:
       type: object
       properties:
-        attributeId:
+        actorEntity:
+          $ref: '#/components/schemas/ApiEnhancedEntity'
+        context:
+          $ref: '#/components/schemas/ApiPolicyModelEntity'
+        description:
           type: string
-          xml:
-            name: AttributeId
-            attribute: true
-        category:
+        operationEntity:
+          $ref: '#/components/schemas/ApiEnhancedEntity'
+        organisationEntity:
+          $ref: '#/components/schemas/ApiEnhancedEntity'
+        purpose:
           type: string
-          xml:
-            name: Category
-            attribute: true
-        content:
-          type: array
-          items:
-            type: object
-        dataType:
-          type: string
-          xml:
-            name: DataType
-            attribute: true
-        issuer:
-          type: string
-          xml:
-            name: Issuer
-            attribute: true
-        otherAttributes:
-          type: object
-          additionalProperties:
-            type: string
-      xml:
-        name: AttributeAssignment
-        namespace: urn:oasis:names:tc:xacml:3.0:core:schema:wd-17
-    Attributes:
-      type: object
-      properties:
-        attributes:
-          type: array
-          xml:
-            name: Attribute
-          items:
-            $ref: '#/components/schemas/Attribute'
-        category:
-          type: string
-          xml:
-            name: Category
-            attribute: true
-        content:
-          $ref: '#/components/schemas/Content'
-        id:
-          type: string
-          xml:
-            namespace: http://www.w3.org/XML/1998/namespace
-            attribute: true
-      xml:
-        name: Attributes
-        namespace: urn:oasis:names:tc:xacml:3.0:core:schema:wd-17
-    AttributesReference:
-      type: object
-      properties:
-        referenceId:
-          type: object
-      xml:
-        name: AttributesReference
-        namespace: urn:oasis:names:tc:xacml:3.0:core:schema:wd-17
-    Content:
-      type: object
-      properties:
-        content:
-          type: array
-          items:
-            type: object
-      xml:
-        name: Content
-        namespace: urn:oasis:names:tc:xacml:3.0:core:schema:wd-17
-    DOMConfiguration:
-      type: object
-      properties:
-        parameterNames:
-          $ref: '#/components/schemas/DOMStringList'
-    DOMImplementation:
-      type: object
-    DOMStringList:
-      type: object
-      properties:
-        length:
-          type: integer
-          format: int32
-    Document:
-      type: object
-      properties:
-        attributes:
-          $ref: '#/components/schemas/NamedNodeMap'
-        baseURI:
-          type: string
-        childNodes:
-          $ref: '#/components/schemas/NodeList'
-        doctype:
-          $ref: '#/components/schemas/DocumentType'
-        documentElement:
-          $ref: '#/components/schemas/Element'
-        documentURI:
-          type: string
-        domConfig:
-          $ref: '#/components/schemas/DOMConfiguration'
-        firstChild:
-          $ref: '#/components/schemas/Node'
-        implementation:
-          $ref: '#/components/schemas/DOMImplementation'
-        inputEncoding:
-          type: string
-        lastChild:
-          $ref: '#/components/schemas/Node'
-        localName:
-          type: string
-        namespaceURI:
-          type: string
-        nextSibling:
-          $ref: '#/components/schemas/Node'
-        nodeName:
-          type: string
-        nodeType:
-          type: integer
-          format: int32
-        nodeValue:
-          type: string
-        ownerDocument:
-          $ref: '#/components/schemas/Document'
-        parentNode:
-          $ref: '#/components/schemas/Node'
-        prefix:
-          type: string
-        previousSibling:
-          $ref: '#/components/schemas/Node'
-        strictErrorChecking:
-          type: boolean
-        textContent:
-          type: string
-        xmlEncoding:
-          type: string
-        xmlStandalone:
-          type: boolean
-        xmlVersion:
-          type: string
-    DocumentType:
-      type: object
-      properties:
-        attributes:
-          $ref: '#/components/schemas/NamedNodeMap'
-        baseURI:
-          type: string
-        childNodes:
-          $ref: '#/components/schemas/NodeList'
-        entities:
-          $ref: '#/components/schemas/NamedNodeMap'
-        firstChild:
-          $ref: '#/components/schemas/Node'
-        internalSubset:
-          type: string
-        lastChild:
-          $ref: '#/components/schemas/Node'
-        localName:
-          type: string
-        name:
-          type: string
-        namespaceURI:
-          type: string
-        nextSibling:
-          $ref: '#/components/schemas/Node'
-        nodeName:
-          type: string
-        nodeType:
-          type: integer
-          format: int32
-        nodeValue:
-          type: string
-        notations:
-          $ref: '#/components/schemas/NamedNodeMap'
-        ownerDocument:
-          $ref: '#/components/schemas/Document'
-        parentNode:
-          $ref: '#/components/schemas/Node'
-        prefix:
-          type: string
-        previousSibling:
-          $ref: '#/components/schemas/Node'
-        publicId:
-          type: string
-        systemId:
-          type: string
-        textContent:
-          type: string
-    Element:
-      type: object
-      properties:
-        attributeNode:
-          $ref: '#/components/schemas/Attr'
-        attributeNodeNS:
-          $ref: '#/components/schemas/Attr'
-        attributes:
-          $ref: '#/components/schemas/NamedNodeMap'
-        baseURI:
-          type: string
-        childNodes:
-          $ref: '#/components/schemas/NodeList'
-        firstChild:
-          $ref: '#/components/schemas/Node'
-        lastChild:
-          $ref: '#/components/schemas/Node'
-        localName:
-          type: string
-        namespaceURI:
-          type: string
-        nextSibling:
-          $ref: '#/components/schemas/Node'
-        nodeName:
-          type: string
-        nodeType:
-          type: integer
-          format: int32
-        nodeValue:
-          type: string
-        ownerDocument:
-          $ref: '#/components/schemas/Document'
-        parentNode:
-          $ref: '#/components/schemas/Node'
-        prefix:
-          type: string
-        previousSibling:
-          $ref: '#/components/schemas/Node'
-        schemaTypeInfo:
-          $ref: '#/components/schemas/TypeInfo'
-        tagName:
-          type: string
-        textContent:
-          type: string
-    IdReferenceType:
-      type: object
-      properties:
-        earliestVersion:
-          type: string
-          xml:
-            name: EarliestVersion
-            attribute: true
-        latestVersion:
-          type: string
-          xml:
-            name: LatestVersion
-            attribute: true
-        value:
-          type: string
-        version:
-          type: string
-          xml:
-            name: Version
-            attribute: true
+        resourceEntity:
+          $ref: '#/components/schemas/ApiEnhancedEntity'
     InformationModelEdge:
       required:
         - edgeType
@@ -4401,266 +3143,76 @@ components:
             - STATE_TYPES
             - STATE_VALUES
             - OPERATION_CONTAINER_TYPES
-    MultiRequests:
+    InformationModelRelation:
       required:
-        - requestReferences
+        - direction
+        - name
+        - nodeType
+        - relationType
       type: object
       properties:
-        requestReferences:
-          type: array
-          xml:
-            name: RequestReference
-          items:
-            $ref: '#/components/schemas/RequestReference'
-      xml:
-        name: MultiRequests
-        namespace: urn:oasis:names:tc:xacml:3.0:core:schema:wd-17
-    NamedNodeMap:
-      type: object
-      properties:
-        length:
-          type: integer
-          format: int32
-        namedItem:
-          $ref: '#/components/schemas/Node'
-        namedItemNS:
-          $ref: '#/components/schemas/Node'
-    Node:
-      type: object
-      properties:
-        attributes:
-          $ref: '#/components/schemas/NamedNodeMap'
-        baseURI:
+        direction:
           type: string
-        childNodes:
-          $ref: '#/components/schemas/NodeList'
-        firstChild:
-          $ref: '#/components/schemas/Node'
-        lastChild:
-          $ref: '#/components/schemas/Node'
-        localName:
-          type: string
-        namespaceURI:
-          type: string
-        nextSibling:
-          $ref: '#/components/schemas/Node'
-        nodeName:
+        name:
           type: string
         nodeType:
-          type: integer
-          format: int32
-        nodeValue:
           type: string
-        ownerDocument:
-          $ref: '#/components/schemas/Document'
-        parentNode:
-          $ref: '#/components/schemas/Node'
-        prefix:
-          type: string
-        previousSibling:
-          $ref: '#/components/schemas/Node'
-        textContent:
-          type: string
-    NodeList:
-      type: object
-      properties:
-        length:
-          type: integer
-          format: int32
-    Obligation:
-      type: object
-      properties:
-        attributeAssignments:
-          type: array
-          xml:
-            name: AttributeAssignment
-          items:
-            $ref: '#/components/schemas/AttributeAssignment'
-        obligationId:
-          type: string
-          xml:
-            name: ObligationId
-            attribute: true
-      xml:
-        name: Obligation
-        namespace: urn:oasis:names:tc:xacml:3.0:core:schema:wd-17
-    Obligations:
-      required:
-        - obligations
-      type: object
-      properties:
-        obligations:
-          type: array
-          xml:
-            name: Obligation
-          items:
-            $ref: '#/components/schemas/Obligation'
-      xml:
-        name: Obligations
-        namespace: urn:oasis:names:tc:xacml:3.0:core:schema:wd-17
-    PolicyIdentifierList:
-      type: object
-      properties:
-        policyIdReferencesAndPolicySetIdReferences:
-          type: array
-          items:
-            type: object
-            properties:
-              globalScope:
-                type: boolean
-              name:
-                type: object
-                properties:
-                  localPart:
-                    type: string
-                  namespaceURI:
-                    type: string
-                  prefix:
-                    type: string
-              nil:
-                type: boolean
-              typeSubstituted:
-                type: boolean
-              value:
-                $ref: '#/components/schemas/IdReferenceType'
-      xml:
-        name: PolicyIdentifierList
-        namespace: urn:oasis:names:tc:xacml:3.0:core:schema:wd-17
-    Request:
-      required:
-        - attributes
-      type: object
-      properties:
-        attributes:
-          type: array
-          xml:
-            name: Attributes
-          items:
-            $ref: '#/components/schemas/Attributes'
-        combinedDecision:
-          type: boolean
-          xml:
-            name: CombinedDecision
-            attribute: true
-        multiRequests:
-          $ref: '#/components/schemas/MultiRequests'
-        requestDefaults:
-          $ref: '#/components/schemas/RequestDefaults'
-        returnPolicyIdList:
-          type: boolean
-          xml:
-            name: ReturnPolicyIdList
-            attribute: true
-      xml:
-        name: Request
-        namespace: urn:oasis:names:tc:xacml:3.0:core:schema:wd-17
-    RequestDefaults:
-      type: object
-      properties:
-        xpathVersion:
-          type: string
-      xml:
-        name: RequestDefaults
-        namespace: urn:oasis:names:tc:xacml:3.0:core:schema:wd-17
-    RequestReference:
-      required:
-        - attributesReferences
-      type: object
-      properties:
-        attributesReferences:
-          type: array
-          xml:
-            name: AttributesReference
-          items:
-            $ref: '#/components/schemas/AttributesReference'
-      xml:
-        name: RequestReference
-        namespace: urn:oasis:names:tc:xacml:3.0:core:schema:wd-17
-    Result:
-      required:
-        - decision
-      type: object
-      properties:
-        associatedAdvice:
-          $ref: '#/components/schemas/AssociatedAdvice'
-        attributes:
-          type: array
-          xml:
-            name: Attributes
-          items:
-            $ref: '#/components/schemas/Attributes'
-        decision:
-          type: string
-          xml:
-            name: Decision
           enum:
-            - PERMIT
-            - DENY
-            - INDETERMINATE
-            - NOT_APPLICABLE
-        obligations:
-          $ref: '#/components/schemas/Obligations'
-        policyIdentifierList:
-          $ref: '#/components/schemas/PolicyIdentifierList'
-        status:
-          $ref: '#/components/schemas/Status'
-      xml:
-        name: Result
-        namespace: urn:oasis:names:tc:xacml:3.0:core:schema:wd-17
-    Status:
-      required:
-        - statusCode
-      type: object
-      properties:
-        statusCode:
-          $ref: '#/components/schemas/StatusCode'
-        statusDetail:
-          $ref: '#/components/schemas/StatusDetail'
-        statusMessage:
+            - ROLES
+            - EVENT_TYPES
+            - OPERATIONS
+            - DATA_TYPES
+            - MACHINE_TYPES
+            - PURPOSES
+            - ATTRIBUTES
+            - ATTRIBUTE_NAMES
+            - ATTRIBUTE_TYPES
+            - CONTEXT_TYPES
+            - DATA_IOS
+            - FLOWTYPES
+            - ORGANISATION_TYPES
+            - STATES
+            - STATE_TYPES
+            - STATE_VALUES
+            - OPERATION_CONTAINER_TYPES
+        relationType:
           type: string
-          xml:
-            name: StatusMessage
-      xml:
-        name: Status
-        namespace: urn:oasis:names:tc:xacml:3.0:core:schema:wd-17
-    StatusCode:
-      type: object
-      properties:
-        statusCode:
-          $ref: '#/components/schemas/StatusCode'
-        value:
-          type: string
-          xml:
-            name: Value
-            attribute: true
-      xml:
-        name: StatusCode
-        namespace: urn:oasis:names:tc:xacml:3.0:core:schema:wd-17
-    StatusDetail:
-      type: object
-      properties:
-        anies:
-          type: array
-          items:
-            $ref: '#/components/schemas/Element'
-      xml:
-        name: StatusDetail
-        namespace: urn:oasis:names:tc:xacml:3.0:core:schema:wd-17
-    TypeInfo:
-      type: object
-      properties:
-        typeName:
-          type: string
-        typeNamespace:
-          type: string
-    XacmlResponseExtended:
-      required:
-        - results
-      type: object
-      properties:
-        results:
-          type: array
-          xml:
-            name: Result
-          items:
-            $ref: '#/components/schemas/Result'
+          enum:
+            - HAS_ATTRIBUTE
+            - HAS_ATTRIBUTE_INVERSE
+            - HAS_NAME
+            - HAS_TYPE
+            - HAS_VALUE
+            - HAS_STRING_VALUE
+            - REFERS_TO_DATA_TYPE
+            - IS_OF_STATE
+            - IS_OF_FLOW_TYPE
+            - HOSTS_CONTAINER
+            - ACCEPTS_HUMAN_ACTOR
+            - PROVIDES_OPERATION_INVERSE
+            - IMPLEMENTED_BY
+            - COMPLIANT_WITH_PURPOSE
+            - HAS_INPUT
+            - HAS_OUTPUT
+            - HOSTS_CONTAINER_INVERSE
+            - PROVIDES_OPERATION
+            - COMPLIANT_WITH_PURPOSE_INVERSE
+            - MAY_ACT_FOR_PURPOSE_INVERSE
+            - MAY_ACT_FOR_PURPOSE
+            - HAS_STATE_TYPE
+            - HAS_STATE_VALUE
+            - HAS_DEFAULT_STATE_VALUE
+            - HAS_POTENTIAL_STATE_VALUE
+            - IS_A
+            - IS_A_INVERSE
+            - IS_PART_OF
+            - CONTAINS
+            - MORE_DETAILED_THAN
+            - LESS_DETAILED_THAN
+  securitySchemes:
+    Bearer-jwt:
+      bearerFormat: JWT
+      in: header
+      name: Authorization
+      scheme: bearer
+      type: http

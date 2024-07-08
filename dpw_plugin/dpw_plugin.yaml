@@ -1,4 +1,4 @@
-openapi: 3.0.1
+openapi: 3.1.0
 info:
   contact:
     email: goodflows@ict-abovo.gr
@@ -17,7 +17,10 @@ tags:
 paths:
   /processModel/{companyID}:
     post:
-      description: The information model will be created from scratch if it does not exist and get loaded into the temp model of the returned ID (which will be flushed to the stored ontology upon save)
+      description: >-
+        The workspace will be created from scratch if it does not exist and get
+        loaded into the temp model of the returned ID (which will be flushed to
+        the stored ontology upon save)
       operationId: createWorkspace
       parameters:
         - description: ID of the company
@@ -31,14 +34,14 @@ paths:
           content:
             text/plain:
               examples:
-                Temp information model ID:
-                  description: Temp information model ID
+                Temp workspace ID:
+                  description: Temp workspace ID
                   value: 16afa1ee8a564d2086f05e901a39a80a
-          description: Successful operation. Returns the ID of the temp information model
+          description: Successful operation. Returns the ID of the temp workspace
       summary: Create the reference workspace
       tags:
         - Workflow Model API
-  /processModel/{companyID}/{informationModelID}:
+  /processModel/{companyID}/{workspaceID}:
     post:
       operationId: saveWorkspace
       parameters:
@@ -48,9 +51,9 @@ paths:
           required: true
           schema:
             type: string
-        - description: ID of the information model
+        - description: ID of the workspace
           in: path
-          name: informationModelID
+          name: workspaceID
           required: true
           schema:
             type: string
@@ -59,16 +62,18 @@ paths:
           content:
             text/plain:
               examples:
-                Information model ID:
-                  description: Information model ID
+                Workspace ID:
+                  description: Workspace ID
                   value: 16afa1ee8a564d2086f05e901a39a80a
-          description: Successful operation. Returns the ID of the stored information model
+          description: Successful operation. Returns the ID of the stored workspace
       summary: Save workspace
       tags:
         - Workflow Model API
   /processModel/{companyID}/{workspaceID}/models:
     get:
-      description: All process models that have been created and not deleted within the company and current workspace will be listed.
+      description: >-
+        All process models that have been created and not deleted within the
+        company and current workspace will be listed.
       operationId: listProcessModels
       parameters:
         - description: ID of the company
@@ -91,13 +96,18 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/ApiProcessModelBasicInfo'
-          description: Successful operation. Returns the list of all currently existing process models
+          description: >-
+            Successful operation. Returns the list of all currently existing
+            process models
       summary: Display all process models in a list
       tags:
         - Workflow Model API
   /processModel/{companyID}/{workspaceID}/process:
     post:
-      description: The process model will be created in the specified company/workspace from scratch if it does not exist, and get loaded into the temp model of the returned ID (which will be flushed to the stored ontology upon save)
+      description: >-
+        The process model will be created in the specified company/workspace
+        from scratch if it does not exist, and get loaded into the temp model of
+        the returned ID (which will be flushed to the stored ontology upon save)
       operationId: createProcessModel
       parameters:
         - description: ID of the company
@@ -126,7 +136,9 @@ paths:
         - Workflow Model API
   /processModel/{companyID}/{workspaceID}/{processModelID}:
     delete:
-      description: Deletes the specified process model, thereby removing all associated models from the ontology.
+      description: >-
+        Deletes the specified process model, thereby removing all associated
+        models from the ontology.
       operationId: deleteProcessModel
       parameters:
         - description: ID of the company
@@ -153,12 +165,16 @@ paths:
             application/json:
               schema:
                 type: boolean
-          description: Successful operation. Returns true if process model successfully deleted.
+          description: >-
+            Successful operation. Returns true if process model successfully
+            deleted.
       summary: Delete a previously created process model
       tags:
         - Workflow Model API
     get:
-      description: Loads the specified process model from the ontology onto the appropriate object.
+      description: >-
+        Loads the specified process model from the ontology onto the appropriate
+        object.
       operationId: openProcessModel
       parameters:
         - description: ID of the company
@@ -185,12 +201,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiProcessModel'
-          description: Successful operation. Returns the object representing the specified process model
+          description: >-
+            Successful operation. Returns the object representing the specified
+            process model
       summary: Open a previously created process model
       tags:
         - Workflow Model API
     put:
-      description: Updates the specified process model with the information contained in the provided process model object.
+      description: >-
+        Updates the specified process model with the information contained in
+        the provided process model object.
       operationId: updateProcessModel
       parameters:
         - description: ID of the company
@@ -223,13 +243,21 @@ paths:
             application/json:
               schema:
                 type: boolean
-          description: Successful operation. Returns true if process model successfully updated.
+          description: >-
+            Successful operation. Returns true if process model successfully
+            updated.
       summary: Update a previously created process model
       tags:
         - Workflow Model API
   /processModel/{companyID}/{workspaceID}/{processModelID}/dataset:
     post:
-      description: A new dataset node will be created and associated with the process model at hand, as a special type of task node reflecting a data import operation. This method only defines the name of the dataset, passed as a parameter and set as the asset of the (sole) execution profile. Mainly designed to facilitate the creation of new dataset nodes through the UI, based on known datasets.
+      description: >-
+        A new dataset node will be created and associated with the process model
+        at hand, as a special type of task node reflecting a data import
+        operation. This method only defines the name of the dataset, passed as a
+        parameter and set as the asset of the (sole) execution profile. Mainly
+        designed to facilitate the creation of new dataset nodes through the UI,
+        based on known datasets.
       operationId: createNewConcreteDatasetNode
       parameters:
         - description: ID of the company
@@ -271,7 +299,12 @@ paths:
         - Workflow Model API
   /processModel/{companyID}/{workspaceID}/{processModelID}/edge:
     post:
-      description: A new edge will be created and associated with the process model at hand. This will be defined to connect the task nodes specified as its source and destination in the edge object passed as a parameter. Mainly designed to facilitate the creation, through the UI, of a new edge connecting two existing tasks.
+      description: >-
+        A new edge will be created and associated with the process model at
+        hand. This will be defined to connect the task nodes specified as its
+        source and destination in the edge object passed as a parameter. Mainly
+        designed to facilitate the creation, through the UI, of a new edge
+        connecting two existing tasks.
       operationId: createNewEdge
       parameters:
         - description: ID of the company
@@ -352,7 +385,9 @@ paths:
       tags:
         - Workflow Model API
     get:
-      description: Provides an object representing the process edge specified through the corresponding ID.
+      description: >-
+        Provides an object representing the process edge specified through the
+        corresponding ID.
       operationId: getEdge
       parameters:
         - description: ID of the company
@@ -390,7 +425,9 @@ paths:
       tags:
         - Workflow Model API
     put:
-      description: Updates a process edge specified through its ID, by setting the values defined within an edge object passed as a parameter.
+      description: >-
+        Updates a process edge specified through its ID, by setting the values
+        defined within an edge object passed as a parameter.
       operationId: updateEdge
       parameters:
         - description: ID of the company
@@ -437,7 +474,9 @@ paths:
         - Workflow Model API
   /processModel/{companyID}/{workspaceID}/{processModelID}/edge/{edgeID}/type:
     put:
-      description: By default, each new edge is created without a type ('plain'). Through this method its type can be set to be either control or data edge.
+      description: >-
+        By default, each new edge is created without a type ('plain'). Through
+        this method its type can be set to be either control or data edge.
       operationId: updateEdgeType
       parameters:
         - description: ID of the company
@@ -478,7 +517,10 @@ paths:
                 edge type:
                   description: edge type
                   value: DataEdges
-          description: 'Successful operation. Returns the type of the edge as string, assuming one of the following three values: ''PLAIN'', ''ControlEdges'', ''DataEdges''.'
+          description: >-
+            Successful operation. Returns the type of the edge as string,
+            assuming one of the following three values: 'PLAIN', 'ControlEdges',
+            'DataEdges'.
       summary: Update the type of an edge
       tags:
         - Workflow Model API
@@ -515,7 +557,10 @@ paths:
         - Workflow Model API
   /processModel/{companyID}/{workspaceID}/{processModelID}/exportRichModel:
     get:
-      description: Exports the specified process model as the corresponding OWL ontology. It also exports the full Information Model and the basic concepts of Workflow Models.
+      description: >-
+        Exports the specified process model as the corresponding OWL ontology.
+        It also exports the full Information Model and the basic concepts of
+        Workflow Models.
       operationId: exportRichProcessModel
       parameters:
         - description: ID of the company
@@ -546,7 +591,9 @@ paths:
         - Workflow Model API
   /processModel/{companyID}/{workspaceID}/{processModelID}/graph:
     get:
-      description: Returns the mxgraph zip file that has been created for the specified process model.
+      description: >-
+        Returns the mxgraph zip file that has been created for the specified
+        process model.
       operationId: getProcessModelMxGraphFile
       parameters:
         - description: ID of the company
@@ -576,7 +623,11 @@ paths:
       tags:
         - Workflow Model API
     put:
-      description: Saves the specified process model to the ontology, thereby also storing the associated mxgraph zip file for future use. The ZIP file should be uploaded using 'multipart/form-data' media type using the 'attachment' input.
+      description: >-
+        Saves the specified process model to the ontology, thereby also storing
+        the associated mxgraph zip file for future use. The ZIP file should be
+        uploaded using 'multipart/form-data' media type using the 'attachment'
+        input.
       operationId: saveProcessModelWithMxGraphFile
       parameters:
         - description: ID of the company
@@ -617,13 +668,18 @@ paths:
             application/json:
               schema:
                 type: boolean
-          description: Successful operation. Returns true if process model successfully saved.
+          description: >-
+            Successful operation. Returns true if process model successfully
+            saved.
       summary: Save a process model
       tags:
         - Workflow Model API
   /processModel/{companyID}/{workspaceID}/{processModelID}/initiators:
     put:
-      description: Allows the workflow designer to provide a list of abstract and/or concrete actors as initiators. Note that this function removes all previously initiators associated prior to adding the new ones.
+      description: >-
+        Allows the workflow designer to provide a list of abstract and/or
+        concrete actors as initiators. Note that this function removes all
+        previously initiators associated prior to adding the new ones.
       operationId: setProcessModelInitiators
       parameters:
         - description: ID of the company
@@ -662,7 +718,11 @@ paths:
         - Workflow Model API
   /processModel/{companyID}/{workspaceID}/{processModelID}/purposes:
     put:
-      description: Adds a set of possible process purposes to the process model, implying that such a workflow can be executed in order for any of these purposes to be served. Note that this method removes any purposes previously defined.
+      description: >-
+        Adds a set of possible process purposes to the process model, implying
+        that such a workflow can be executed in order for any of these purposes
+        to be served. Note that this method removes any purposes previously
+        defined.
       operationId: setProcessModelPurposes
       parameters:
         - description: ID of the company
@@ -701,7 +761,12 @@ paths:
         - Workflow Model API
   /processModel/{companyID}/{workspaceID}/{processModelID}/task:
     post:
-      description: A new task node will be created and associated with the process model at hand. This method only defines its operation, passed as a parameter as part of the corresponding task node object. Mainly designed to facilitate the creation of new task nodes through the UI, based on operation.
+      description: >-
+        A new task node will be created and associated with the process model at
+        hand. This method only defines its operation, passed as a parameter as
+        part of the corresponding task node object. Mainly designed to
+        facilitate the creation of new task nodes through the UI, based on
+        operation.
       operationId: createNewTaskNode
       parameters:
         - description: ID of the company
@@ -742,7 +807,9 @@ paths:
         - Workflow Model API
   /processModel/{companyID}/{workspaceID}/{processModelID}/task/{taskNodeID}:
     delete:
-      description: The task node specified through its ID is removed from the process model, together with its ingoing/outgoing edges.
+      description: >-
+        The task node specified through its ID is removed from the process
+        model, together with its ingoing/outgoing edges.
       operationId: deleteTaskNode
       parameters:
         - description: ID of the company
@@ -782,7 +849,9 @@ paths:
       tags:
         - Workflow Model API
     get:
-      description: Provides an object representing the process task node specified through the corresponding ID.
+      description: >-
+        Provides an object representing the process task node specified through
+        the corresponding ID.
       operationId: getTaskNode
       parameters:
         - description: ID of the company
@@ -820,7 +889,9 @@ paths:
       tags:
         - Workflow Model API
     put:
-      description: Updates a process task node specified through its ID, by setting the values defined within a task node object passed as a parameter.
+      description: >-
+        Updates a process task node specified through its ID, by setting the
+        values defined within a task node object passed as a parameter.
       operationId: updateTaskNode
       parameters:
         - description: ID of the company
@@ -867,7 +938,9 @@ paths:
         - Workflow Model API
   /processModel/{companyID}/{workspaceID}/{processModelID}/verify:
     get:
-      description: Constructs the verified and transformed (if needed) version of the specified process model.
+      description: >-
+        Constructs the verified and transformed (if needed) version of the
+        specified process model.
       operationId: verifyProcessModel
       parameters:
         - description: ID of the company
@@ -894,7 +967,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiVerifiedProcessModel'
-          description: Successful operation. Returns an object representing the verified version of the initial process model.
+          description: >-
+            Successful operation. Returns an object representing the verified
+            version of the initial process model.
       summary: Verify a user-defined process model
       tags:
         - Workflow Model API
@@ -921,12 +996,16 @@ components:
               $ref: '#/components/schemas/ApiWorkflowModelEntity'
             description:
               type: string
+            energyConstraint:
+              $ref: '#/components/schemas/ApiWorkflowModelEntity'
             initiators:
               type: array
               items:
                 type: string
             isVerified:
               type: boolean
+            pricingConstraint:
+              $ref: '#/components/schemas/ApiWorkflowModelEntity'
             purposes:
               type: array
               items:
@@ -999,12 +1078,16 @@ components:
                   type: boolean
               items:
                 $ref: '#/components/schemas/ApiWorkflowModelEntity'
+            energyConstraint:
+              $ref: '#/components/schemas/ApiWorkflowModelEntity'
             initiators:
               type: array
               items:
                 type: string
             isVerified:
               type: boolean
+            pricingConstraint:
+              $ref: '#/components/schemas/ApiWorkflowModelEntity'
             purposes:
               type: array
               items:
@@ -1056,5 +1139,8 @@ components:
   securitySchemes:
     Bearer-jwt:
       bearerFormat: JWT
+      in: header
+      name: Authorization
       scheme: bearer
       type: http
+

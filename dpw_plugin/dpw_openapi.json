@@ -1,5 +1,5 @@
 {
-  "openapi": "3.0.1",
+  "openapi": "3.1.0",
   "info": {
     "contact": {
       "email": "goodflows@ict-abovo.gr",
@@ -29,7 +29,7 @@
   "paths": {
     "/processModel/{companyID}": {
       "post": {
-        "description": "The information model will be created from scratch if it does not exist and get loaded into the temp model of the returned ID (which will be flushed to the stored ontology upon save)",
+        "description": "The workspace will be created from scratch if it does not exist and get loaded into the temp model of the returned ID (which will be flushed to the stored ontology upon save)",
         "operationId": "createWorkspace",
         "parameters": [
           {
@@ -47,14 +47,14 @@
             "content": {
               "text/plain": {
                 "examples": {
-                  "Temp information model ID": {
-                    "description": "Temp information model ID",
+                  "Temp workspace ID": {
+                    "description": "Temp workspace ID",
                     "value": "16afa1ee8a564d2086f05e901a39a80a"
                   }
                 }
               }
             },
-            "description": "Successful operation. Returns the ID of the temp information model"
+            "description": "Successful operation. Returns the ID of the temp workspace"
           }
         },
         "summary": "Create the reference workspace",
@@ -63,7 +63,7 @@
         ]
       }
     },
-    "/processModel/{companyID}/{informationModelID}": {
+    "/processModel/{companyID}/{workspaceID}": {
       "post": {
         "operationId": "saveWorkspace",
         "parameters": [
@@ -77,9 +77,9 @@
             }
           },
           {
-            "description": "ID of the information model",
+            "description": "ID of the workspace",
             "in": "path",
-            "name": "informationModelID",
+            "name": "workspaceID",
             "required": true,
             "schema": {
               "type": "string"
@@ -91,14 +91,14 @@
             "content": {
               "text/plain": {
                 "examples": {
-                  "Information model ID": {
-                    "description": "Information model ID",
+                  "Workspace ID": {
+                    "description": "Workspace ID",
                     "value": "16afa1ee8a564d2086f05e901a39a80a"
                   }
                 }
               }
             },
-            "description": "Successful operation. Returns the ID of the stored information model"
+            "description": "Successful operation. Returns the ID of the stored workspace"
           }
         },
         "summary": "Save workspace",
@@ -1435,6 +1435,9 @@
               "description": {
                 "type": "string"
               },
+              "energyConstraint": {
+                "$ref": "#/components/schemas/ApiWorkflowModelEntity"
+              },
               "initiators": {
                 "type": "array",
                 "items": {
@@ -1443,6 +1446,9 @@
               },
               "isVerified": {
                 "type": "boolean"
+              },
+              "pricingConstraint": {
+                "$ref": "#/components/schemas/ApiWorkflowModelEntity"
               },
               "purposes": {
                 "type": "array",
@@ -1568,6 +1574,9 @@
                   "$ref": "#/components/schemas/ApiWorkflowModelEntity"
                 }
               },
+              "energyConstraint": {
+                "$ref": "#/components/schemas/ApiWorkflowModelEntity"
+              },
               "initiators": {
                 "type": "array",
                 "items": {
@@ -1576,6 +1585,9 @@
               },
               "isVerified": {
                 "type": "boolean"
+              },
+              "pricingConstraint": {
+                "$ref": "#/components/schemas/ApiWorkflowModelEntity"
               },
               "purposes": {
                 "type": "array",
@@ -1662,6 +1674,8 @@
     "securitySchemes": {
       "Bearer-jwt": {
         "bearerFormat": "JWT",
+        "in": "header",
+        "name": "Authorization",
         "scheme": "bearer",
         "type": "http"
       }

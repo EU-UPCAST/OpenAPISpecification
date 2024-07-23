@@ -1,0 +1,196 @@
+openapi: 3.0.0
+info:
+  title: Federated Learning Server API
+  description: API for managing federated learning setups and training
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:5000
+
+paths:
+  /savesetup:
+    post:
+      summary: Save a new federated learning setup
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                strategy:
+                  type: string
+                rounds:
+                  type: integer
+                minimum_clients:
+                  type: integer
+                clients:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '200':
+          description: Setup saved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+
+  /listsetup:
+    get:
+      summary: List all federated learning setups
+      responses:
+        '200':
+          description: List of setups
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    strategy:
+                      type: string
+                    rounds:
+                      type: integer
+                    minimum_clients:
+                      type: integer
+                    clients:
+                      type: array
+                      items:
+                        type: string
+
+  /getsetup/{setup_id}:
+    get:
+      summary: Get details of a specific setup
+      parameters:
+        - in: path
+          name: setup_id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Setup details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  strategy:
+                    type: string
+                  rounds:
+                    type: integer
+                  minimum_clients:
+                    type: integer
+                  clients:
+                    type: array
+                    items:
+                      type: string
+        '404':
+          description: Setup not found
+
+  /uploadmodel:
+    post:
+      summary: Upload an initial model
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                initialModel:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Model uploaded successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  filename:
+                    type: string
+        '400':
+          description: Bad request
+
+  /printmodel/{filename}:
+    get:
+      summary: Print model details
+      parameters:
+        - in: path
+          name: filename
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Model details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  variables:
+                    type: object
+                    additionalProperties:
+                      type: array
+                      items:
+                        type: integer
+        '404':
+          description: File not found
+
+  /start:
+    post:
+      summary: Start federated learning training
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                initial_model_path:
+                  type: string
+                num_clients:
+                  type: integer
+                num_rounds:
+                  type: integer
+                client_address:
+                  type: string
+      responses:
+        '200':
+          description: Training started successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '400':
+          description: Bad request
+
+  /logs:
+    get:
+      summary: Get training logs
+      responses:
+        '200':
+          description: Training logs
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string

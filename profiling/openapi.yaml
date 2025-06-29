@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   title: UPCAST Data Profiling API
   description: OpenAPI specification for the UPCAST Data Profiling API
-  version: 0.1.0
+  version: 1.0.0
 paths:
   /profile/get_profilers:
     get:
@@ -14,15 +14,37 @@ paths:
           content:
             application/json:
               schema: {}
-  /profile/generate_profile:
+  /profile/generate_profile_with_file:
     post:
       summary: Generate Profile For Local File With Selected Profiler
-      operationId: generate_profile_for_local_file_with_selected_profiler_profile_generate_profile_post
+      operationId: generate_profile_for_local_file_with_selected_profiler_profile_generate_profile_with_file_post
       requestBody:
         content:
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Body_generate_profile_for_local_file_with_selected_profiler_profile_generate_profile_post'
+              $ref: '#/components/schemas/Body_generate_profile_for_local_file_with_selected_profiler_profile_generate_profile_with_file_post'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /profile/generate_profile:
+    post:
+      summary: Upload File Or Url
+      operationId: upload_file_or_url_profile_generate_profile_post
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Body_upload_file_or_url_profile_generate_profile_post'
         required: true
       responses:
         '200':
@@ -41,20 +63,20 @@ paths:
       summary: Get Profile From Url
       operationId: get_profile_from_url_profile_get_profile_get
       parameters:
-        - name: url
-          in: query
-          required: true
-          schema:
-            type: string
-            title: Url
-        - name: profiler_name
-          in: query
-          required: false
-          schema:
-            anyOf:
-              - type: string
-              - type: 'null'
-            title: Profiler Name
+      - name: url
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Url
+      - name: profiler_name
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Profiler Name
       responses:
         '200':
           description: Successful Response
@@ -72,12 +94,12 @@ paths:
       summary: Update Profile Specified By Url With Local File
       operationId: update_profile_specified_by_url_with_local_file_profile_update_profile_put
       parameters:
-        - name: url
-          in: query
-          required: true
-          schema:
-            type: string
-            title: Url
+      - name: url
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Url
       requestBody:
         required: true
         content:
@@ -101,12 +123,12 @@ paths:
       summary: Delete Profile Specified By Url
       operationId: delete_profile_specified_by_url_profile_delete_profile_delete
       parameters:
-        - name: url
-          in: query
-          required: true
-          schema:
-            type: string
-            title: Url
+      - name: url
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Url
       responses:
         '200':
           description: Successful Response
@@ -121,7 +143,7 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    Body_generate_profile_for_local_file_with_selected_profiler_profile_generate_profile_post:
+    Body_generate_profile_for_local_file_with_selected_profiler_profile_generate_profile_with_file_post:
       properties:
         selected_app:
           type: string
@@ -132,9 +154,9 @@ components:
           title: File
       type: object
       required:
-        - selected_app
-        - file
-      title: Body_generate_profile_for_local_file_with_selected_profiler_profile_generate_profile_post
+      - selected_app
+      - file
+      title: Body_generate_profile_for_local_file_with_selected_profiler_profile_generate_profile_with_file_post
     Body_update_profile_specified_by_url_with_local_file_profile_update_profile_put:
       properties:
         file_content:
@@ -144,8 +166,40 @@ components:
           description: Local file to update with
       type: object
       required:
-        - file_content
+      - file_content
       title: Body_update_profile_specified_by_url_with_local_file_profile_update_profile_put
+    Body_upload_file_or_url_profile_generate_profile_post:
+      properties:
+        selected_app:
+          type: string
+          title: Selected App
+        file:
+          type: string
+          format: binary
+          title: File
+        file_url:
+          type: string
+          title: File Url
+        similarity_k:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Similarity K
+        field_info_to_compare:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Field Info To Compare
+        schema:
+          anyOf:
+          - type: string
+            format: binary
+          - type: 'null'
+          title: Schema
+      type: object
+      required:
+      - selected_app
+      title: Body_upload_file_or_url_profile_generate_profile_post
     HTTPValidationError:
       properties:
         detail:
@@ -160,8 +214,8 @@ components:
         loc:
           items:
             anyOf:
-              - type: string
-              - type: integer
+            - type: string
+            - type: integer
           type: array
           title: Location
         msg:
@@ -172,7 +226,7 @@ components:
           title: Error Type
       type: object
       required:
-        - loc
-        - msg
-        - type
+      - loc
+      - msg
+      - type
       title: ValidationError
